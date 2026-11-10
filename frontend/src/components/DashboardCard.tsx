@@ -25,8 +25,8 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
 }) => {
   const variantClasses = {
     white: 'bg-white border-app-border shadow-subtle',
-    mint: 'bg-pastel-lavender/30 border-secondary-lilac shadow-subtle',
-    lavender: 'bg-pastel-lavender/30 border-secondary-lilac shadow-subtle',
+    mint: 'bg-primary-lavender/40 border-soft-lavender shadow-subtle',
+    lavender: 'bg-primary-lavender/40 border-soft-lavender shadow-subtle',
     outline: 'bg-transparent border-dashed border-app-border',
   };
 

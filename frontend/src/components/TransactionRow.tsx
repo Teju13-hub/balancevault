@@ -29,7 +29,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`group flex items-center justify-between p-4 rounded-xl border border-transparent hover:border-app-border hover:bg-main-bg/70 transition-all duration-150 cursor-pointer ${
+      className={`group flex items-center justify-between p-4 rounded-xl border border-transparent hover:border-app-border hover:bg-pastel-lavender/25 transition-all duration-150 cursor-pointer ${
         onClick ? 'active:scale-[0.995]' : ''
       }`}
     >
@@ -37,7 +37,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({
         <div
           className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
             isCredit
-              ? 'bg-pastel-lavender/60 border-secondary-lilac text-app-success'
+              ? 'bg-pastel-lavender border-secondary-lilac text-app-success'
               : isTransfer
               ? 'bg-blue-50 border-blue-200 text-app-info'
               : 'bg-stone-50 border-stone-200 text-primary-text'

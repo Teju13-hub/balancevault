@@ -7,20 +7,25 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Lavender Dream Palette (Mandatory)
-        'pastel-lavender': '#E9DDF8',
-        'secondary-lilac': '#C9B6E4',
-        'accent-purple': '#A78BCA',
+        // Lavender Dream Palette (Final Source of Truth)
         'main-bg': '#F8F5FC',
+        'primary-lavender': '#E9DDF8',
+        'pastel-lavender': '#E9DDF8',
+        'soft-lavender': '#DCCBF2',
+        'secondary-lilac': '#DCCBF2',
         'deep-purple': '#514568',
         'deep-purple-hover': '#433856',
+        'accent-purple': '#9B83C7',
+        'white': '#FFFFFF',
+        'white-card': '#FFFFFF',
 
         // Typography & Structure
+        'main-text': '#30283D',
         'primary-text': '#30283D',
         'secondary-text': '#81758F',
-        'app-border': '#EAE3F1',
-        'borders': '#EAE3F1',
-        'white-card': '#FFFFFF',
+        'app-border': '#EAE2F2',
+        'border': '#EAE2F2',
+        'borders': '#EAE2F2',
 
         // Semantic status colors preserved
         'app-success': '#23875A',
@@ -28,10 +33,10 @@ export default {
         'app-error': '#D95353',
         'app-info': '#5689B8',
 
-        // Direct compatibility aliases to ensure complete coverage
+        // Compatibility aliases to ensure complete coverage
         'pastel-mint': '#E9DDF8',
-        'soft-sage': '#C9B6E4',
-        'sage-green': '#A78BCA',
+        'soft-sage': '#DCCBF2',
+        'sage-green': '#9B83C7',
         'light-bg': '#F8F5FC',
         'deep-sage': '#514568',
         'deep-sage-hover': '#433856',

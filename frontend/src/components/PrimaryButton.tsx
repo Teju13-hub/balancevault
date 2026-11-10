@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface PrimaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'solid' | 'sage' | 'accent' | 'outline' | 'danger';
+  variant?: 'solid' | 'purple' | 'sage' | 'accent' | 'outline' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
@@ -27,9 +27,10 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
 
   const variantClasses = {
     solid: 'bg-deep-purple hover:bg-deep-purple-hover text-white shadow-sm hover:shadow active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-deep-purple focus-visible:ring-offset-2',
+    purple: 'bg-accent-purple hover:bg-deep-purple text-white shadow-sm hover:shadow focus-visible:ring-2 focus-visible:ring-accent-purple focus-visible:ring-offset-2',
     sage: 'bg-accent-purple hover:bg-deep-purple text-white shadow-sm hover:shadow focus-visible:ring-2 focus-visible:ring-accent-purple focus-visible:ring-offset-2',
     accent: 'bg-accent-purple hover:bg-deep-purple text-white shadow-sm hover:shadow focus-visible:ring-2 focus-visible:ring-accent-purple focus-visible:ring-offset-2',
-    outline: 'border-2 border-deep-purple text-deep-purple hover:bg-pastel-lavender/40 focus-visible:ring-2 focus-visible:ring-deep-purple focus-visible:ring-offset-2',
+    outline: 'border-2 border-deep-purple text-deep-purple hover:bg-pastel-lavender/50 focus-visible:ring-2 focus-visible:ring-deep-purple focus-visible:ring-offset-2',
     danger: 'bg-app-error hover:bg-red-700 text-white shadow-sm focus-visible:ring-2 focus-visible:ring-app-error focus-visible:ring-offset-2',
   };
 

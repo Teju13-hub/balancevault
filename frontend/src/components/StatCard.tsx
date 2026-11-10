@@ -26,7 +26,7 @@ export const StatCard: React.FC<StatCardProps> = ({
     <div className={`bg-white rounded-2xl p-6 border border-app-border shadow-subtle hover:shadow-card transition-all duration-200 ${className}`}>
       <div className="flex items-start justify-between">
         <span className="text-xs font-medium uppercase tracking-wider text-secondary-text">{title}</span>
-        <div className="w-10 h-10 rounded-xl bg-pastel-lavender/70 border border-secondary-lilac/50 flex items-center justify-center text-deep-purple shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-pastel-lavender border border-secondary-lilac flex items-center justify-center text-deep-purple shrink-0 shadow-sm">
           {icon}
         </div>
       </div>
@@ -41,10 +41,10 @@ export const StatCard: React.FC<StatCardProps> = ({
           <span
             className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md font-semibold ${
               trend === 'up'
-                ? 'bg-pastel-lavender text-app-success'
+                ? 'bg-pastel-lavender text-deep-purple border border-secondary-lilac'
                 : trend === 'down'
-                ? 'bg-red-50 text-app-error'
-                : 'bg-gray-100 text-secondary-text'
+                ? 'bg-red-50 text-app-error border border-red-200'
+                : 'bg-pastel-lavender/60 text-secondary-text border border-app-border'
             }`}
           >
             {trend === 'up' && <ArrowUpRight className="w-3.5 h-3.5" />}

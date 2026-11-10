@@ -101,7 +101,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* View Switcher Pill */}
         <div className="px-5 pt-4 pb-2">
-          <div className="p-1 bg-main-bg rounded-xl border border-app-border flex text-xs font-semibold">
+          <div className="p-1 bg-pastel-lavender/60 rounded-xl border border-secondary-lilac flex text-xs font-semibold">
             <button
               type="button"
               onClick={() => {
@@ -111,7 +111,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className={`flex-1 py-1.5 rounded-lg transition-all text-center ${
                 !isAdminView
                   ? 'bg-deep-purple text-white shadow-sm'
-                  : 'text-secondary-text hover:text-primary-text'
+                  : 'text-deep-purple hover:bg-white/60'
               }`}
             >
               Customer
@@ -125,7 +125,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className={`flex-1 py-1.5 rounded-lg transition-all text-center ${
                 isAdminView
                   ? 'bg-deep-purple text-white shadow-sm'
-                  : 'text-secondary-text hover:text-primary-text'
+                  : 'text-deep-purple hover:bg-white/60'
               }`}
             >
               Admin Mode
@@ -153,7 +153,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 select-none ${
                       isActive
                         ? 'bg-deep-purple text-white shadow-sm font-semibold'
-                        : 'text-primary-text hover:bg-pastel-lavender/40 hover:text-deep-purple'
+                        : 'text-primary-text hover:bg-pastel-lavender hover:text-deep-purple'
                     }`}
                   >
                     <span className={isActive ? 'text-white' : 'text-secondary-text'}>

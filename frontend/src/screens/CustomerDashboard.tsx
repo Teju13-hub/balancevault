@@ -54,14 +54,14 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
   return (
     <div className="space-y-6">
       {/* Synthetic Demo Disclaimer Banner */}
-      <div className="p-3.5 rounded-2xl bg-pastel-lavender/40 border border-secondary-lilac flex items-center justify-between text-xs text-deep-purple">
+      <div className="p-3.5 rounded-2xl bg-pastel-lavender border border-secondary-lilac flex items-center justify-between text-xs text-deep-purple shadow-sm">
         <div className="flex items-center gap-2">
           <Info className="w-4 h-4 text-deep-purple shrink-0" />
           <span>
             <strong>Demonstration Environment:</strong> Displaying synthetic client data. Real money movement is strictly isolated to backend ledger verification.
           </span>
         </div>
-        <span className="hidden sm:inline font-mono text-[11px] bg-white/80 px-2 py-0.5 rounded border border-secondary-lilac font-medium">
+        <span className="hidden sm:inline font-mono text-[11px] bg-white px-2 py-0.5 rounded border border-secondary-lilac font-bold text-deep-purple">
           Flyway Validated
         </span>
       </div>
@@ -69,7 +69,9 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
       {/* Welcome Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-deep-purple">Overview</span>
+          <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pastel-lavender text-deep-purple border border-secondary-lilac mb-1">
+            Overview
+          </span>
           <h2 className="text-2xl lg:text-3xl font-extrabold text-primary-text tracking-tight mt-0.5">
             Welcome back, {DEMO_USER.fullName}
           </h2>

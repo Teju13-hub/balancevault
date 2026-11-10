@@ -36,7 +36,7 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
         <div className={`px-6 pt-5 pb-4 flex items-center justify-between border-b border-app-border/70 ${headerClassName}`}>
           <div className="flex items-center gap-3">
             {icon && (
-              <div className="w-9 h-9 rounded-xl bg-pastel-lavender/60 flex items-center justify-center text-deep-purple shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-pastel-lavender border border-secondary-lilac/70 flex items-center justify-center text-deep-purple shrink-0 shadow-sm">
                 {icon}
               </div>
             )}

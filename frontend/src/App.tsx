@@ -104,7 +104,7 @@ export function App() {
   const currentMeta = screenMeta[currentScreen] || { title: 'BalanceVault', subtitle: '' };
 
   return (
-    <div className="min-h-screen bg-light-bg flex">
+    <div className="min-h-screen bg-main-bg flex">
       {/* Global Sidebar */}
       <Sidebar
         currentScreen={currentScreen}

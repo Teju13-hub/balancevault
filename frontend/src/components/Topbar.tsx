@@ -76,7 +76,7 @@ export const Topbar: React.FC<TopbarProps> = ({
         {/* Right: Notifications & User profile menu */}
         <div className="flex items-center gap-3">
           {/* Security Badge */}
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-pastel-lavender/50 border border-secondary-lilac/60 rounded-full text-xs font-semibold text-deep-purple">
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-pastel-lavender border border-secondary-lilac rounded-full text-xs font-semibold text-deep-purple shadow-sm">
             <Shield className="w-3.5 h-3.5" />
             <span>256-Bit TLS</span>
           </div>
@@ -88,7 +88,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                 setShowNotifications(!showNotifications);
                 setShowProfileMenu(false);
               }}
-              className="relative p-2 rounded-xl text-secondary-text hover:text-deep-purple hover:bg-pastel-lavender/40 border border-transparent hover:border-app-border transition-colors focus:outline-none"
+              className="relative p-2 rounded-xl text-secondary-text hover:text-deep-purple hover:bg-pastel-lavender border border-transparent hover:border-app-border transition-colors focus:outline-none"
               aria-label="Notifications"
             >
               <Bell className="w-5 h-5" />

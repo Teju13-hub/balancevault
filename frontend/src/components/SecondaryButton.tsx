@@ -23,7 +23,7 @@ export const SecondaryButton: React.FC<SecondaryButtonProps> = ({
 
   return (
     <button
-      className={`inline-flex items-center justify-center bg-white hover:bg-pastel-lavender/40 text-primary-text border border-app-border hover:border-secondary-lilac transition-all duration-200 outline-none select-none shadow-subtle active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-accent-purple focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ${sizeClasses[size]} ${className}`}
+      className={`inline-flex items-center justify-center bg-white hover:bg-pastel-lavender text-primary-text hover:text-deep-purple border border-app-border hover:border-secondary-lilac transition-all duration-200 outline-none select-none shadow-subtle active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-accent-purple focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ${sizeClasses[size]} ${className}`}
       disabled={disabled}
       {...props}
     >

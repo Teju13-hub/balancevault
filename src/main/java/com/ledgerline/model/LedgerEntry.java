@@ -1,11 +1,13 @@
 package com.ledgerline.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
 @Table(name = "ledger_entries")
+@Check(constraints = "amount > 0 AND balance_after >= 0")
 public class LedgerEntry {
 
     @Id

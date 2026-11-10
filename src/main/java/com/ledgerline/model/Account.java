@@ -1,11 +1,13 @@
 package com.ledgerline.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
 @Table(name = "accounts")
+@Check(constraints = "balance >= 0")
 public class Account {
 
     @Id

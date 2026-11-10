@@ -16,7 +16,7 @@ import {
   X,
   ExternalLink,
 } from 'lucide-react';
-import type { Screen, UserRole } from '../types';
+import { Screen, UserRole } from '../types';
 
 interface SidebarProps {
   currentScreen: Screen;
@@ -68,8 +68,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Sidebar Content */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-app-border flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-auto ${mobileOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-app-border flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-auto ${
+          mobileOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
       >
         {/* Brand Header */}
         <div className="px-6 py-5 border-b border-app-border flex items-center justify-between">
@@ -77,12 +78,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             onClick={() => onNavigate('dashboard')}
             className="flex items-center gap-3 cursor-pointer select-none group"
           >
-            <div className="w-10 h-10 rounded-xl bg-deep-sage flex items-center justify-center text-white shadow-sm group-hover:bg-deep-sage-hover transition-colors">
+            <div className="w-10 h-10 rounded-xl bg-deep-purple flex items-center justify-center text-white shadow-sm group-hover:bg-deep-purple-hover transition-colors">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
               <span className="font-extrabold text-base tracking-tight text-primary-text block font-sans">
-                BALANCE<span className="text-deep-sage">VAULT</span>
+                BALANCE<span className="text-deep-purple">VAULT</span>
               </span>
               <span className="text-[10px] uppercase font-semibold tracking-wider text-secondary-text block">
                 Trust in Every Transaction
@@ -91,7 +92,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <button
             onClick={onCloseMobile}
-            className="p-1.5 rounded-lg text-secondary-text hover:bg-pastel-mint/30 lg:hidden"
+            className="p-1.5 rounded-lg text-secondary-text hover:bg-pastel-lavender/40 lg:hidden"
             aria-label="Close menu"
           >
             <X className="w-5 h-5" />
@@ -100,17 +101,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* View Switcher Pill */}
         <div className="px-5 pt-4 pb-2">
-          <div className="p-1 bg-light-bg rounded-xl border border-app-border flex text-xs font-semibold">
+          <div className="p-1 bg-main-bg rounded-xl border border-app-border flex text-xs font-semibold">
             <button
               type="button"
               onClick={() => {
                 onRoleChange('ACCOUNT_HOLDER');
                 onNavigate('dashboard');
               }}
-              className={`flex-1 py-1.5 rounded-lg transition-all text-center ${!isAdminView
-                ? 'bg-deep-sage text-white shadow-sm'
-                : 'text-secondary-text hover:text-primary-text'
-                }`}
+              className={`flex-1 py-1.5 rounded-lg transition-all text-center ${
+                !isAdminView
+                  ? 'bg-deep-purple text-white shadow-sm'
+                  : 'text-secondary-text hover:text-primary-text'
+              }`}
             >
               Customer
             </button>
@@ -120,10 +122,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onRoleChange('ADMIN');
                 onNavigate('admin-dashboard');
               }}
-              className={`flex-1 py-1.5 rounded-lg transition-all text-center ${isAdminView
-                ? 'bg-deep-sage text-white shadow-sm'
-                : 'text-secondary-text hover:text-primary-text'
-                }`}
+              className={`flex-1 py-1.5 rounded-lg transition-all text-center ${
+                isAdminView
+                  ? 'bg-deep-purple text-white shadow-sm'
+                  : 'text-secondary-text hover:text-primary-text'
+              }`}
             >
               Admin Mode
             </button>
@@ -147,10 +150,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       onNavigate(item.id);
                       onCloseMobile();
                     }}
-                    className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 select-none ${isActive
-                      ? 'bg-deep-sage text-white shadow-sm font-semibold'
-                      : 'text-primary-text hover:bg-pastel-mint/30 hover:text-deep-sage'
-                      }`}
+                    className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-150 select-none ${
+                      isActive
+                        ? 'bg-deep-purple text-white shadow-sm font-semibold'
+                        : 'text-primary-text hover:bg-pastel-lavender/40 hover:text-deep-purple'
+                    }`}
                   >
                     <span className={isActive ? 'text-white' : 'text-secondary-text'}>
                       {item.icon}
@@ -169,13 +173,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onNavigate('landing');
                 onCloseMobile();
               }}
-              className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-medium text-secondary-text hover:text-deep-sage hover:bg-pastel-mint/20 transition-colors"
+              className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-medium text-secondary-text hover:text-deep-purple hover:bg-pastel-lavender/30 transition-colors"
             >
               <span className="flex items-center gap-2">
                 <ExternalLink className="w-3.5 h-3.5" />
                 <span>Public Landing Page</span>
               </span>
-              <span className="px-1.5 py-0.5 rounded text-[10px] bg-pastel-mint font-semibold text-deep-sage">
+              <span className="px-1.5 py-0.5 rounded text-[10px] bg-pastel-lavender font-semibold text-deep-purple">
                 Preview
               </span>
             </button>
@@ -183,10 +187,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* User Card & Logout Footer */}
-        <div className="p-4 border-t border-app-border bg-light-bg/50">
+        <div className="p-4 border-t border-app-border bg-main-bg/50">
           <div className="flex items-center justify-between mb-3 px-2">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-full bg-soft-sage/80 border border-sage-green flex items-center justify-center font-bold text-deep-sage text-sm shrink-0">
+              <div className="w-9 h-9 rounded-full bg-secondary-lilac/70 border border-accent-purple flex items-center justify-center font-bold text-deep-purple text-sm shrink-0">
                 {isAdminView ? 'AD' : 'BV'}
               </div>
               <div className="min-w-0">
@@ -212,4 +216,3 @@ export const Sidebar: React.FC<SidebarProps> = ({
     </>
   );
 };
-

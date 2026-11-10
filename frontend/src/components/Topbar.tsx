@@ -48,7 +48,7 @@ export const Topbar: React.FC<TopbarProps> = ({
         <div className="flex items-center gap-3">
           <button
             onClick={onOpenMobileMenu}
-            className="p-2 rounded-xl border border-app-border text-secondary-text hover:bg-pastel-mint/30 hover:text-deep-sage lg:hidden focus:outline-none"
+            className="p-2 rounded-xl border border-app-border text-secondary-text hover:bg-pastel-lavender/40 hover:text-deep-purple lg:hidden focus:outline-none"
             aria-label="Open navigation"
           >
             <Menu className="w-5 h-5" />
@@ -68,7 +68,7 @@ export const Topbar: React.FC<TopbarProps> = ({
               value={searchQuery}
               onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
               placeholder="Search accounts, transactions, or reference IDs..."
-              className="w-full bg-light-bg rounded-xl border border-app-border pl-9 pr-4 py-2 text-xs text-primary-text placeholder:text-secondary-text/70 focus:outline-none focus:border-sage-green focus:ring-2 focus:ring-sage-green/20 transition-all"
+              className="w-full bg-main-bg rounded-xl border border-app-border pl-9 pr-4 py-2 text-xs text-primary-text placeholder:text-secondary-text/70 focus:outline-none focus:border-accent-purple focus:ring-2 focus:ring-accent-purple/20 transition-all"
             />
           </div>
         </div>
@@ -76,7 +76,7 @@ export const Topbar: React.FC<TopbarProps> = ({
         {/* Right: Notifications & User profile menu */}
         <div className="flex items-center gap-3">
           {/* Security Badge */}
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-pastel-mint/40 border border-soft-sage/60 rounded-full text-xs font-semibold text-deep-sage">
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-pastel-lavender/50 border border-secondary-lilac/60 rounded-full text-xs font-semibold text-deep-purple">
             <Shield className="w-3.5 h-3.5" />
             <span>256-Bit TLS</span>
           </div>
@@ -88,7 +88,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                 setShowNotifications(!showNotifications);
                 setShowProfileMenu(false);
               }}
-              className="relative p-2 rounded-xl text-secondary-text hover:text-deep-sage hover:bg-pastel-mint/30 border border-transparent hover:border-app-border transition-colors focus:outline-none"
+              className="relative p-2 rounded-xl text-secondary-text hover:text-deep-purple hover:bg-pastel-lavender/40 border border-transparent hover:border-app-border transition-colors focus:outline-none"
               aria-label="Notifications"
             >
               <Bell className="w-5 h-5" />
@@ -99,11 +99,11 @@ export const Topbar: React.FC<TopbarProps> = ({
               <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-modal border border-app-border py-2 z-50 animate-in fade-in zoom-in-95">
                 <div className="px-4 py-2 border-b border-app-border flex items-center justify-between">
                   <span className="font-semibold text-xs uppercase tracking-wider text-primary-text">Notifications</span>
-                  <span className="text-[11px] font-medium text-deep-sage hover:underline cursor-pointer">Mark all as read</span>
+                  <span className="text-[11px] font-medium text-deep-purple hover:underline cursor-pointer">Mark all as read</span>
                 </div>
                 <div className="divide-y divide-app-border/60 max-h-64 overflow-y-auto">
                   {notifications.map((n) => (
-                    <div key={n.id} className="p-3 hover:bg-light-bg/80 flex items-start gap-3 transition-colors">
+                    <div key={n.id} className="p-3 hover:bg-main-bg/80 flex items-start gap-3 transition-colors">
                       <div className="mt-0.5 shrink-0">{n.icon}</div>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-medium text-primary-text">{n.title}</p>
@@ -123,9 +123,9 @@ export const Topbar: React.FC<TopbarProps> = ({
                 setShowProfileMenu(!showProfileMenu);
                 setShowNotifications(false);
               }}
-              className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-pastel-mint/20 border border-transparent hover:border-app-border transition-colors focus:outline-none"
+              className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-pastel-lavender/30 border border-transparent hover:border-app-border transition-colors focus:outline-none"
             >
-              <div className="w-8 h-8 rounded-full bg-deep-sage text-white font-bold text-xs flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-deep-purple text-white font-bold text-xs flex items-center justify-center">
                 {userRole === 'ADMIN' ? 'AD' : 'EV'}
               </div>
               <ChevronDown className="w-3.5 h-3.5 text-secondary-text" />
@@ -147,7 +147,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                       onNavigate('profile');
                       setShowProfileMenu(false);
                     }}
-                    className="w-full text-left px-4 py-2 text-xs text-primary-text hover:bg-pastel-mint/30 hover:text-deep-sage transition-colors"
+                    className="w-full text-left px-4 py-2 text-xs text-primary-text hover:bg-pastel-lavender/40 hover:text-deep-purple transition-colors"
                   >
                     View Customer Profile
                   </button>
@@ -156,7 +156,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                       onNavigate('settings');
                       setShowProfileMenu(false);
                     }}
-                    className="w-full text-left px-4 py-2 text-xs text-primary-text hover:bg-pastel-mint/30 hover:text-deep-sage transition-colors"
+                    className="w-full text-left px-4 py-2 text-xs text-primary-text hover:bg-pastel-lavender/40 hover:text-deep-purple transition-colors"
                   >
                     Account Settings
                   </button>
@@ -169,4 +169,3 @@ export const Topbar: React.FC<TopbarProps> = ({
     </header>
   );
 };
-

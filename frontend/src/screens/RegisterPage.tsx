@@ -28,18 +28,18 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate, onRegist
   };
 
   return (
-    <div className="min-h-screen bg-light-bg flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-main-bg flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <div
           onClick={() => onNavigate('landing')}
           className="inline-flex items-center gap-3 cursor-pointer group"
         >
-          <div className="w-12 h-12 rounded-2xl bg-deep-sage flex items-center justify-center text-white shadow-sm group-hover:bg-deep-sage-hover transition-colors">
+          <div className="w-12 h-12 rounded-2xl bg-deep-purple flex items-center justify-center text-white shadow-sm group-hover:bg-deep-purple-hover transition-colors">
             <ShieldCheck className="w-7 h-7" />
           </div>
           <div className="text-left">
             <span className="font-extrabold text-xl tracking-tight text-primary-text block">
-              BALANCE<span className="text-deep-sage">VAULT</span>
+              BALANCE<span className="text-deep-purple">VAULT</span>
             </span>
             <span className="text-[10px] uppercase font-bold tracking-widest text-secondary-text block">
               Trust in Every Transaction
@@ -57,7 +57,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate, onRegist
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-6 sm:px-10 rounded-2xl border border-app-border shadow-card">
           {/* Policy Notice Box */}
-          <div className="mb-6 p-3.5 rounded-xl bg-pastel-mint/40 border border-soft-sage text-deep-sage flex items-start gap-3 text-xs leading-relaxed">
+          <div className="mb-6 p-3.5 rounded-xl bg-pastel-lavender/40 border border-secondary-lilac text-deep-purple flex items-start gap-3 text-xs leading-relaxed">
             <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
             <div>
               <strong className="font-semibold block">Strict Security Policy</strong>
@@ -106,10 +106,10 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate, onRegist
                   checked={termsAccepted}
                   onChange={(e) => setTermsAccepted(e.target.checked)}
                   required
-                  className="mt-0.5 rounded border-app-border text-deep-sage focus:ring-sage-green w-4 h-4"
+                  className="mt-0.5 rounded border-app-border text-deep-purple focus:ring-accent-purple w-4 h-4"
                 />
                 <span className="text-secondary-text leading-snug">
-                  I agree to the <span className="font-bold text-deep-sage hover:underline">Vault Terms of Service</span> and understand all ledger actions are cryptographically append-only.
+                  I agree to the <span className="font-bold text-deep-purple hover:underline">Vault Terms of Service</span> and understand all ledger actions are cryptographically append-only.
                 </span>
               </label>
             </div>
@@ -131,7 +131,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate, onRegist
             Already have an active account?{' '}
             <span
               onClick={() => onNavigate('login')}
-              className="font-bold text-deep-sage hover:underline cursor-pointer"
+              className="font-bold text-deep-purple hover:underline cursor-pointer"
             >
               Sign In
             </span>
@@ -141,4 +141,3 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate, onRegist
     </div>
   );
 };
-

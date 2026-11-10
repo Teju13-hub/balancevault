@@ -35,7 +35,7 @@ export function DataTable<T>({
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm border-collapse">
           <thead>
-            <tr className="border-b border-app-border bg-light-bg/50 text-xs font-semibold uppercase tracking-wider text-secondary-text">
+            <tr className="border-b border-app-border bg-main-bg/60 text-xs font-semibold uppercase tracking-wider text-secondary-text">
               {columns.map((col, idx) => (
                 <th key={idx} className={`px-5 py-3.5 ${col.headerClassName || ''}`}>
                   {col.header}
@@ -55,8 +55,8 @@ export function DataTable<T>({
                 <tr
                   key={keyExtractor(row)}
                   onClick={() => onRowClick && onRowClick(row)}
-                  className={`hover:bg-pastel-mint/10 transition-colors ${
-                    onRowClick ? 'cursor-pointer active:bg-pastel-mint/20' : ''
+                  className={`hover:bg-pastel-lavender/20 transition-colors ${
+                    onRowClick ? 'cursor-pointer active:bg-pastel-lavender/30' : ''
                   }`}
                 >
                   {columns.map((col, colIdx) => {
@@ -80,7 +80,7 @@ export function DataTable<T>({
       </div>
 
       {totalPages > 1 && onPageChange && (
-        <div className="px-6 py-3.5 border-t border-app-border bg-light-bg/30 flex items-center justify-between text-xs text-secondary-text">
+        <div className="px-6 py-3.5 border-t border-app-border bg-main-bg/40 flex items-center justify-between text-xs text-secondary-text">
           <span>
             Page <strong className="text-primary-text font-semibold">{currentPage}</strong> of{' '}
             <strong className="text-primary-text font-semibold">{totalPages}</strong>
@@ -109,4 +109,3 @@ export function DataTable<T>({
     </div>
   );
 }
-

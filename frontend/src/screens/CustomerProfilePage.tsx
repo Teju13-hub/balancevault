@@ -29,7 +29,7 @@ export const CustomerProfilePage: React.FC<CustomerProfilePageProps> = ({ onShow
 
       {/* Main Profile Header Card */}
       <div className="bg-white rounded-2xl border border-app-border p-6 shadow-subtle flex flex-col sm:flex-row items-center sm:items-start gap-6">
-        <div className="w-20 h-20 rounded-2xl bg-deep-sage text-white text-2xl font-bold flex items-center justify-center shrink-0 shadow-sm">
+        <div className="w-20 h-20 rounded-2xl bg-deep-purple text-white text-2xl font-bold flex items-center justify-center shrink-0 shadow-sm">
           EV
         </div>
 
@@ -39,7 +39,7 @@ export const CustomerProfilePage: React.FC<CustomerProfilePageProps> = ({ onShow
               <h3 className="text-xl font-bold text-primary-text">{DEMO_USER.fullName}</h3>
               <p className="text-xs text-secondary-text mt-0.5 font-mono">ID: {DEMO_USER.id}</p>
             </div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pastel-mint border border-soft-sage text-deep-sage text-xs font-bold self-center sm:self-auto">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pastel-lavender border border-secondary-lilac text-deep-purple text-xs font-bold self-center sm:self-auto">
               <ShieldCheck className="w-4 h-4" />
               <span>{DEMO_USER.tier}</span>
             </span>
@@ -47,15 +47,15 @@ export const CustomerProfilePage: React.FC<CustomerProfilePageProps> = ({ onShow
 
           <div className="mt-4 pt-4 border-t border-app-border grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
             <div className="flex items-center gap-2 text-secondary-text">
-              <Mail className="w-4 h-4 text-deep-sage shrink-0" />
+              <Mail className="w-4 h-4 text-deep-purple shrink-0" />
               <span className="truncate">{DEMO_USER.email}</span>
             </div>
             <div className="flex items-center gap-2 text-secondary-text">
-              <Phone className="w-4 h-4 text-deep-sage shrink-0" />
+              <Phone className="w-4 h-4 text-deep-purple shrink-0" />
               <span>{DEMO_USER.phone}</span>
             </div>
             <div className="flex items-center gap-2 text-secondary-text">
-              <Calendar className="w-4 h-4 text-deep-sage shrink-0" />
+              <Calendar className="w-4 h-4 text-deep-purple shrink-0" />
               <span>Member since {DEMO_USER.joinedDate}</span>
             </div>
           </div>
@@ -69,22 +69,22 @@ export const CustomerProfilePage: React.FC<CustomerProfilePageProps> = ({ onShow
           subtitle="Cryptographic authorization settings"
         >
           <div className="space-y-4">
-            <div className="p-3.5 rounded-xl bg-light-bg border border-app-border flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-main-bg border border-app-border flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <KeyRound className="w-5 h-5 text-deep-sage" />
+                <KeyRound className="w-5 h-5 text-deep-purple" />
                 <div>
                   <p className="text-xs font-bold text-primary-text">Two-Factor Authentication (2FA)</p>
                   <p className="text-[11px] text-secondary-text">FIDO2 / WebAuthn Hardware Security</p>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-pastel-mint text-app-success">
+              <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-pastel-lavender text-app-success">
                 Enabled
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-light-bg border border-app-border flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-main-bg border border-app-border flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Lock className="w-5 h-5 text-deep-sage" />
+                <Lock className="w-5 h-5 text-deep-purple" />
                 <div>
                   <p className="text-xs font-bold text-primary-text">Assigned Role</p>
                   <p className="text-[11px] text-secondary-text">Enforced server-side: ACCOUNT_HOLDER</p>
@@ -111,9 +111,9 @@ export const CustomerProfilePage: React.FC<CustomerProfilePageProps> = ({ onShow
           subtitle="Tiered regulatory compliance status"
         >
           <div className="space-y-4 text-xs">
-            <div className="p-3.5 rounded-xl bg-pastel-mint/30 border border-soft-sage space-y-2">
+            <div className="p-3.5 rounded-xl bg-pastel-lavender/30 border border-secondary-lilac space-y-2">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-deep-sage">Verified Documents</span>
+                <span className="font-bold text-deep-purple">Verified Documents</span>
                 <span className="text-[11px] font-semibold text-app-success flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Approved
                 </span>
@@ -143,4 +143,3 @@ export const CustomerProfilePage: React.FC<CustomerProfilePageProps> = ({ onShow
     </div>
   );
 };
-

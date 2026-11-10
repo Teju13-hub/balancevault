@@ -73,7 +73,7 @@ export const AdminAuditLogPage: React.FC<AdminAuditLogPageProps> = ({ onShowToas
         title="Append-Only Audit Trail"
         description="Immutable system event stream logged via database-level triggers."
         badge={
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-pastel-mint border border-soft-sage text-deep-sage flex items-center gap-1.5">
+          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-pastel-lavender border border-secondary-lilac text-deep-purple flex items-center gap-1.5">
             <Lock className="w-3.5 h-3.5" />
             <span>DB Trigger Protected</span>
           </span>
@@ -98,7 +98,7 @@ export const AdminAuditLogPage: React.FC<AdminAuditLogPageProps> = ({ onShowToas
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search action, actor, or IP..."
-            className="w-full bg-light-bg rounded-xl border border-app-border pl-9 pr-4 py-2 text-xs text-primary-text focus:outline-none focus:border-sage-green"
+            className="w-full bg-main-bg rounded-xl border border-app-border pl-9 pr-4 py-2 text-xs text-primary-text focus:outline-none focus:border-accent-purple"
           />
         </div>
 

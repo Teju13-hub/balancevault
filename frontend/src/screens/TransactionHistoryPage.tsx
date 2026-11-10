@@ -57,7 +57,7 @@ export const TransactionHistoryPage: React.FC<TransactionHistoryPageProps> = ({ 
         <span
           className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
             row.type === 'CREDIT'
-              ? 'bg-pastel-mint text-app-success'
+              ? 'bg-pastel-lavender text-app-success'
               : row.type === 'TRANSFER'
               ? 'bg-blue-50 text-app-info'
               : 'bg-stone-100 text-secondary-text'
@@ -125,7 +125,7 @@ export const TransactionHistoryPage: React.FC<TransactionHistoryPageProps> = ({ 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by counterparty, memo, ref ID..."
-            className="w-full bg-light-bg rounded-xl border border-app-border pl-9 pr-4 py-2 text-xs text-primary-text placeholder:text-secondary-text focus:outline-none focus:border-sage-green focus:ring-2 focus:ring-sage-green/20"
+            className="w-full bg-light-bg rounded-xl border border-app-border pl-9 pr-4 py-2 text-xs text-primary-text placeholder:text-secondary-text focus:outline-none focus:border-accent-purple focus:ring-2 focus:ring-accent-purple/20"
           />
         </div>
 
@@ -134,7 +134,7 @@ export const TransactionHistoryPage: React.FC<TransactionHistoryPageProps> = ({ 
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="bg-light-bg rounded-xl border border-app-border px-3 py-2 text-xs font-medium text-primary-text focus:outline-none focus:border-sage-green"
+            className="bg-light-bg rounded-xl border border-app-border px-3 py-2 text-xs font-medium text-primary-text focus:outline-none focus:border-accent-purple"
           >
             <option value="ALL">All Types</option>
             <option value="CREDIT">Credits (+)</option>
@@ -146,7 +146,7 @@ export const TransactionHistoryPage: React.FC<TransactionHistoryPageProps> = ({ 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-light-bg rounded-xl border border-app-border px-3 py-2 text-xs font-medium text-primary-text focus:outline-none focus:border-sage-green"
+            className="bg-light-bg rounded-xl border border-app-border px-3 py-2 text-xs font-medium text-primary-text focus:outline-none focus:border-accent-purple"
           >
             <option value="ALL">All Statuses</option>
             <option value="COMPLETED">Completed</option>
@@ -160,7 +160,7 @@ export const TransactionHistoryPage: React.FC<TransactionHistoryPageProps> = ({ 
               setTypeFilter('ALL');
               setStatusFilter('ALL');
             }}
-            className="text-xs font-semibold text-deep-sage hover:underline px-2 py-1"
+            className="text-xs font-semibold text-deep-purple hover:underline px-2 py-1"
           >
             Reset
           </button>

@@ -23,7 +23,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="text-secondary-text hover:text-primary-text transition-colors p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-sage-green rounded"
+          className="text-secondary-text hover:text-primary-text transition-colors p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-purple rounded"
           aria-label={showPassword ? 'Hide password' : 'Show password'}
         >
           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -33,4 +33,3 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
     />
   );
 };
-

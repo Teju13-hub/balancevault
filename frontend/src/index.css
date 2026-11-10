@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --color-pastel-mint: #D9F0E4;
-  --color-soft-sage: #B7DCC8;
-  --color-sage-green: #8BBFA6;
-  --color-light-bg: #F5FAF6;
-  --color-deep-sage: #426B55;
-  --color-primary-text: #24372C;
-  --color-secondary-text: #74877B;
-  --color-border: #E1EBE3;
+  --color-pastel-lavender: #E9DDF8;
+  --color-secondary-lilac: #C9B6E4;
+  --color-accent-purple: #A78BCA;
+  --color-main-bg: #F8F5FC;
+  --color-deep-purple: #514568;
+  --color-primary-text: #30283D;
+  --color-secondary-text: #81758F;
+  --color-border: #EAE3F1;
   --color-white: #FFFFFF;
   --color-success: #23875A;
   --color-warning: #D69B36;
@@ -20,24 +20,24 @@
 
 @layer base {
   body {
-    background-color: var(--color-light-bg);
+    background-color: var(--color-main-bg);
     color: var(--color-primary-text);
     font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
   }
 }
 
-/* Custom scrollbars with Mint & Sage styling */
+/* Custom scrollbars with Lavender Dream styling */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F5FAF6;
+  background: #F8F5FC;
 }
 ::-webkit-scrollbar-thumb {
-  background: #B7DCC8;
+  background: #C9B6E4;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #8BBFA6;
+  background: #A78BCA;
 }

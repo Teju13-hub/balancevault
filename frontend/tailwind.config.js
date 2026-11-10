@@ -7,30 +7,42 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Mandatory Mint & Sage Palette
-        'pastel-mint': '#D9F0E4',
-        'soft-sage': '#B7DCC8',
-        'sage-green': '#8BBFA6',
-        'light-bg': '#F5FAF6',
-        'deep-sage': '#426B55',
-        'deep-sage-hover': '#355644',
+        // Lavender Dream Palette (Mandatory)
+        'pastel-lavender': '#E9DDF8',
+        'secondary-lilac': '#C9B6E4',
+        'accent-purple': '#A78BCA',
+        'main-bg': '#F8F5FC',
+        'deep-purple': '#514568',
+        'deep-purple-hover': '#433856',
 
-        // Supporting Colors
-        'primary-text': '#24372C',
-        'secondary-text': '#74877B',
-        'app-border': '#E1EBE3',
+        // Typography & Structure
+        'primary-text': '#30283D',
+        'secondary-text': '#81758F',
+        'app-border': '#EAE3F1',
+        'borders': '#EAE3F1',
+        'white-card': '#FFFFFF',
+
+        // Semantic status colors preserved
         'app-success': '#23875A',
         'app-warning': '#D69B36',
         'app-error': '#D95353',
         'app-info': '#5689B8',
+
+        // Direct compatibility aliases to ensure complete coverage
+        'pastel-mint': '#E9DDF8',
+        'soft-sage': '#C9B6E4',
+        'sage-green': '#A78BCA',
+        'light-bg': '#F8F5FC',
+        'deep-sage': '#514568',
+        'deep-sage-hover': '#433856',
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        'subtle': '0 2px 8px -2px rgba(36, 55, 44, 0.05), 0 1px 4px -1px rgba(36, 55, 44, 0.03)',
-        'card': '0 4px 16px -4px rgba(36, 55, 44, 0.06), 0 2px 6px -2px rgba(36, 55, 44, 0.03)',
-        'modal': '0 12px 36px -6px rgba(36, 55, 44, 0.12), 0 4px 12px -2px rgba(36, 55, 44, 0.06)',
+        'subtle': '0 2px 8px -2px rgba(48, 40, 61, 0.05), 0 1px 4px -1px rgba(48, 40, 61, 0.03)',
+        'card': '0 4px 16px -4px rgba(48, 40, 61, 0.06), 0 2px 6px -2px rgba(48, 40, 61, 0.03)',
+        'modal': '0 12px 36px -6px rgba(48, 40, 61, 0.12), 0 4px 12px -2px rgba(48, 40, 61, 0.06)',
       },
       borderRadius: {
         'xl': '12px',
@@ -40,4 +52,3 @@ export default {
   },
   plugins: [],
 }
-

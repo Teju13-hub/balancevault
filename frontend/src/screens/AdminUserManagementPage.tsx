@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Search, Eye, Ban, CheckCircle } from 'lucide-react';
+import { Search, UserCheck, Shield, MoreVertical, Eye, Ban, CheckCircle } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
-import { DataTable } from '../components/DataTable';
-import type { Column } from '../components/DataTable';
+import { DataTable, Column } from '../components/DataTable';
 import { StatusBadge } from '../components/StatusBadge';
 import { SecondaryButton } from '../components/SecondaryButton';
 import { Modal } from '../components/Modal';
-import type { UserRole } from '../types';
+import { UserRole } from '../types';
 
 interface ManagedUser {
   id: string;
@@ -119,10 +118,10 @@ export const AdminUserManagementPage: React.FC<AdminUserManagementPageProps> = (
       accessor: (row) => (
         <span
           className={`px-2.5 py-1 rounded-full text-xs font-bold ${row.role === 'ADMIN'
-            ? 'bg-deep-sage text-white'
+            ? 'bg-deep-purple text-white'
             : row.role === 'AUDITOR'
               ? 'bg-amber-100 text-amber-800'
-              : 'bg-pastel-mint text-deep-sage'
+              : 'bg-pastel-lavender text-deep-purple'
             }`}
         >
           {row.role}
@@ -175,7 +174,7 @@ export const AdminUserManagementPage: React.FC<AdminUserManagementPageProps> = (
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by username or email..."
-            className="w-full bg-light-bg rounded-xl border border-app-border pl-9 pr-4 py-2 text-xs text-primary-text focus:outline-none focus:border-sage-green"
+            className="w-full bg-main-bg rounded-xl border border-app-border pl-9 pr-4 py-2 text-xs text-primary-text focus:outline-none focus:border-accent-purple"
           />
         </div>
 
@@ -183,7 +182,7 @@ export const AdminUserManagementPage: React.FC<AdminUserManagementPageProps> = (
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="bg-light-bg rounded-xl border border-app-border px-3 py-2 text-xs font-medium text-primary-text focus:outline-none focus:border-sage-green"
+            className="bg-main-bg rounded-xl border border-app-border px-3 py-2 text-xs font-medium text-primary-text focus:outline-none focus:border-accent-purple"
           >
             <option value="ALL">All Roles</option>
             <option value="ACCOUNT_HOLDER">ACCOUNT_HOLDER</option>
@@ -209,10 +208,10 @@ export const AdminUserManagementPage: React.FC<AdminUserManagementPageProps> = (
           subtitle={`Internal UUID: ${selectedUser.id}`}
         >
           <div className="space-y-4 text-xs">
-            <div className="p-4 rounded-xl bg-light-bg border border-app-border space-y-2">
+            <div className="p-4 rounded-xl bg-main-bg border border-app-border space-y-2">
               <div className="flex justify-between">
                 <span className="text-secondary-text">Role Authorization:</span>
-                <span className="font-bold font-mono text-deep-sage">{selectedUser.role}</span>
+                <span className="font-bold font-mono text-deep-purple">{selectedUser.role}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-secondary-text">Registered Email:</span>

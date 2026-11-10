@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowDownLeft, ArrowUpRight, RefreshCw } from 'lucide-react';
 import { StatusBadge } from './StatusBadge';
-import type { Transaction } from '../types';
+import { Transaction } from '../types';
 
 interface TransactionRowProps {
   transaction: Transaction;
@@ -29,17 +29,19 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`group flex items-center justify-between p-4 rounded-xl border border-transparent hover:border-app-border hover:bg-light-bg/70 transition-all duration-150 cursor-pointer ${onClick ? 'active:scale-[0.995]' : ''
-        }`}
+      className={`group flex items-center justify-between p-4 rounded-xl border border-transparent hover:border-app-border hover:bg-main-bg/70 transition-all duration-150 cursor-pointer ${
+        onClick ? 'active:scale-[0.995]' : ''
+      }`}
     >
       <div className="flex items-center gap-3.5 min-w-0">
         <div
-          className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${isCredit
-            ? 'bg-pastel-mint/60 border-soft-sage text-app-success'
-            : isTransfer
+          className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
+            isCredit
+              ? 'bg-pastel-lavender/60 border-secondary-lilac text-app-success'
+              : isTransfer
               ? 'bg-blue-50 border-blue-200 text-app-info'
               : 'bg-stone-50 border-stone-200 text-primary-text'
-            }`}
+          }`}
         >
           {isCredit ? (
             <ArrowDownLeft className="w-5 h-5" />
@@ -52,7 +54,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({
 
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <p className="font-semibold text-sm text-primary-text truncate group-hover:text-deep-sage transition-colors">
+            <p className="font-semibold text-sm text-primary-text truncate group-hover:text-deep-purple transition-colors">
               {transaction.title}
             </p>
             {transaction.memo && (
@@ -80,8 +82,9 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({
         )}
         <div className="text-right">
           <p
-            className={`font-semibold text-sm tracking-tight ${isCredit ? 'text-app-success' : 'text-primary-text'
-              }`}
+            className={`font-semibold text-sm tracking-tight ${
+              isCredit ? 'text-app-success' : 'text-primary-text'
+            }`}
           >
             {isCredit ? '+' : '-'}{formatAmount(transaction.amount, transaction.currency)}
           </p>
@@ -93,4 +96,3 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({
     </div>
   );
 };
-

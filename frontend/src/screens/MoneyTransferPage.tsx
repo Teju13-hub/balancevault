@@ -90,8 +90,8 @@ export const MoneyTransferPage: React.FC<MoneyTransferPageProps> = ({
                     onClick={() => setTransferType('INTERNAL')}
                     className={`p-3 rounded-xl border text-xs font-semibold text-center transition-all ${
                       transferType === 'INTERNAL'
-                        ? 'bg-deep-sage text-white border-deep-sage shadow-sm'
-                        : 'bg-white text-secondary-text border-app-border hover:bg-pastel-mint/30'
+                        ? 'bg-deep-purple text-white border-deep-purple shadow-sm'
+                        : 'bg-white text-secondary-text border-app-border hover:bg-pastel-lavender/30'
                     }`}
                   >
                     Internal Vault Sweep (Instant)
@@ -101,8 +101,8 @@ export const MoneyTransferPage: React.FC<MoneyTransferPageProps> = ({
                     onClick={() => setTransferType('WIRE')}
                     className={`p-3 rounded-xl border text-xs font-semibold text-center transition-all ${
                       transferType === 'WIRE'
-                        ? 'bg-deep-sage text-white border-deep-sage shadow-sm'
-                        : 'bg-white text-secondary-text border-app-border hover:bg-pastel-mint/30'
+                        ? 'bg-deep-purple text-white border-deep-purple shadow-sm'
+                        : 'bg-white text-secondary-text border-app-border hover:bg-pastel-lavender/30'
                     }`}
                   >
                     External FedWire / SWIFT
@@ -118,7 +118,7 @@ export const MoneyTransferPage: React.FC<MoneyTransferPageProps> = ({
                 <select
                   value={sourceAccountId}
                   onChange={(e) => setSourceAccountId(e.target.value)}
-                  className="w-full bg-white rounded-xl border border-app-border px-3.5 py-2.5 text-sm font-medium text-primary-text focus:outline-none focus:border-sage-green focus:ring-2 focus:ring-sage-green/20"
+                  className="w-full bg-white rounded-xl border border-app-border px-3.5 py-2.5 text-sm font-medium text-primary-text focus:outline-none focus:border-accent-purple focus:ring-2 focus:ring-accent-purple/20"
                 >
                   {DEMO_ACCOUNTS.map((acc) => (
                     <option key={acc.id} value={acc.id}>
@@ -212,8 +212,8 @@ export const MoneyTransferPage: React.FC<MoneyTransferPageProps> = ({
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-pastel-mint/30 border border-soft-sage text-xs space-y-3">
-            <div className="flex items-center gap-2 font-bold text-deep-sage">
+          <div className="p-5 rounded-2xl bg-pastel-lavender/30 border border-secondary-lilac text-xs space-y-3">
+            <div className="flex items-center gap-2 font-bold text-deep-purple">
               <ShieldCheck className="w-4 h-4" />
               <span>Immutable Ledger Guard</span>
             </div>

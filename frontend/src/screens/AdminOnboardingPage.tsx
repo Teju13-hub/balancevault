@@ -40,7 +40,7 @@ export const AdminOnboardingPage: React.FC<AdminOnboardingPageProps> = ({ onShow
       header: 'Verification Asset',
       accessor: (row) => (
         <span className="inline-flex items-center gap-1.5 text-xs text-primary-text font-medium">
-          <FileText className="w-3.5 h-3.5 text-deep-sage" />
+          <FileText className="w-3.5 h-3.5 text-deep-purple" />
           <span>{row.documentType}</span>
         </span>
       ),

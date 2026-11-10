@@ -38,18 +38,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onLoginSuccess
   };
 
   return (
-    <div className="min-h-screen bg-light-bg flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-main-bg flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <div
           onClick={() => onNavigate('landing')}
           className="inline-flex items-center gap-3 cursor-pointer group"
         >
-          <div className="w-12 h-12 rounded-2xl bg-deep-sage flex items-center justify-center text-white shadow-sm group-hover:bg-deep-sage-hover transition-colors">
+          <div className="w-12 h-12 rounded-2xl bg-deep-purple flex items-center justify-center text-white shadow-sm group-hover:bg-deep-purple-hover transition-colors">
             <ShieldCheck className="w-7 h-7" />
           </div>
           <div className="text-left">
             <span className="font-extrabold text-xl tracking-tight text-primary-text block">
-              BALANCE<span className="text-deep-sage">VAULT</span>
+              BALANCE<span className="text-deep-purple">VAULT</span>
             </span>
             <span className="text-[10px] uppercase font-bold tracking-widest text-secondary-text block">
               Trust in Every Transaction
@@ -88,12 +88,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onLoginSuccess
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded border-app-border text-deep-sage focus:ring-sage-green w-4 h-4"
+                  className="rounded border-app-border text-deep-purple focus:ring-accent-purple w-4 h-4"
                 />
                 <span className="text-secondary-text font-medium">Remember this device</span>
               </label>
 
-              <span className="font-semibold text-deep-sage hover:underline cursor-pointer">
+              <span className="font-semibold text-deep-purple hover:underline cursor-pointer">
                 Forgot password?
               </span>
             </div>
@@ -119,9 +119,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onLoginSuccess
               <button
                 type="button"
                 onClick={() => fillCredentials('eleanor.vance', 'ACCOUNT_HOLDER')}
-                className="p-2.5 rounded-xl border border-app-border bg-light-bg/60 hover:bg-pastel-mint/40 hover:border-soft-sage text-left transition-colors flex items-center gap-2"
+                className="p-2.5 rounded-xl border border-app-border bg-main-bg/60 hover:bg-pastel-lavender/40 hover:border-secondary-lilac text-left transition-colors flex items-center gap-2"
               >
-                <UserCheck className="w-4 h-4 text-deep-sage shrink-0" />
+                <UserCheck className="w-4 h-4 text-deep-purple shrink-0" />
                 <div className="truncate">
                   <p className="font-semibold text-primary-text truncate">Customer</p>
                   <p className="text-[10px] text-secondary-text truncate">Account Holder</p>
@@ -131,9 +131,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onLoginSuccess
               <button
                 type="button"
                 onClick={() => fillCredentials('admin', 'ADMIN')}
-                className="p-2.5 rounded-xl border border-app-border bg-light-bg/60 hover:bg-pastel-mint/40 hover:border-soft-sage text-left transition-colors flex items-center gap-2"
+                className="p-2.5 rounded-xl border border-app-border bg-main-bg/60 hover:bg-pastel-lavender/40 hover:border-secondary-lilac text-left transition-colors flex items-center gap-2"
               >
-                <Shield className="w-4 h-4 text-deep-sage shrink-0" />
+                <Shield className="w-4 h-4 text-deep-purple shrink-0" />
                 <div className="truncate">
                   <p className="font-semibold text-primary-text truncate">Admin</p>
                   <p className="text-[10px] text-secondary-text truncate">System Authority</p>
@@ -146,7 +146,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onLoginSuccess
             Don't have a BalanceVault account?{' '}
             <span
               onClick={() => onNavigate('register')}
-              className="font-bold text-deep-sage hover:underline cursor-pointer"
+              className="font-bold text-deep-purple hover:underline cursor-pointer"
             >
               Open an Account
             </span>
@@ -156,4 +156,3 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onLoginSuccess
     </div>
   );
 };
-

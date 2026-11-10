@@ -41,7 +41,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       case 'LOW':
         return {
           icon: <CheckCircle2 className="w-3.5 h-3.5 text-app-success" />,
-          classes: 'bg-pastel-mint/70 text-app-success border-soft-sage',
+          classes: 'bg-pastel-lavender/70 text-app-success border-secondary-lilac',
           label: normalized === 'LOW' ? 'Low Risk' : normalized,
         };
       case 'PENDING':
@@ -92,4 +92,3 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
     </span>
   );
 };
-

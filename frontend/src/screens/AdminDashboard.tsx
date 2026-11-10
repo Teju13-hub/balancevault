@@ -28,7 +28,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
         title="Administrative Command Center"
         description="System health, onboarding approvals, and cryptographic audit monitoring."
         badge={
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-pastel-mint border border-soft-sage text-deep-sage flex items-center gap-1.5">
+          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-pastel-lavender border border-secondary-lilac text-deep-purple flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-app-success animate-pulse" />
             <span>Master Node Active</span>
           </span>
@@ -80,7 +80,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
           change="+24"
           trend="up"
           timeframe="this month"
-          icon={<Wallet className="w-5 h-5 text-deep-sage" />}
+          icon={<Wallet className="w-5 h-5 text-deep-purple" />}
         />
         <StatCard
           title="System Security Grade"
@@ -89,7 +89,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
           change="Zero Drift"
           trend="up"
           timeframe="Strict Flyway"
-          icon={<Database className="w-5 h-5 text-deep-sage" />}
+          icon={<Database className="w-5 h-5 text-deep-purple" />}
         />
       </div>
 
@@ -107,10 +107,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
           <div className="space-y-2 pt-2">
             <button
               onClick={() => onNavigate('admin-users')}
-              className="w-full p-3 rounded-xl border border-app-border hover:border-soft-sage hover:bg-pastel-mint/20 text-left transition-colors flex items-center justify-between group"
+              className="w-full p-3 rounded-xl border border-app-border hover:border-secondary-lilac hover:bg-pastel-lavender/30 text-left transition-colors flex items-center justify-between group"
             >
               <div className="flex items-center gap-3">
-                <Users className="w-4 h-4 text-deep-sage" />
+                <Users className="w-4 h-4 text-deep-purple" />
                 <span className="text-xs font-semibold text-primary-text">User &amp; Role Management</span>
               </div>
               <ArrowRight className="w-4 h-4 text-secondary-text group-hover:translate-x-0.5 transition-transform" />
@@ -118,10 +118,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
 
             <button
               onClick={() => onNavigate('admin-onboarding')}
-              className="w-full p-3 rounded-xl border border-app-border hover:border-soft-sage hover:bg-pastel-mint/20 text-left transition-colors flex items-center justify-between group"
+              className="w-full p-3 rounded-xl border border-app-border hover:border-secondary-lilac hover:bg-pastel-lavender/30 text-left transition-colors flex items-center justify-between group"
             >
               <div className="flex items-center gap-3">
-                <FileCheck2 className="w-4 h-4 text-deep-sage" />
+                <FileCheck2 className="w-4 h-4 text-deep-purple" />
                 <span className="text-xs font-semibold text-primary-text">Onboarding (KYC Verification)</span>
               </div>
               <ArrowRight className="w-4 h-4 text-secondary-text group-hover:translate-x-0.5 transition-transform" />
@@ -129,10 +129,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
 
             <button
               onClick={() => onNavigate('admin-audit')}
-              className="w-full p-3 rounded-xl border border-app-border hover:border-soft-sage hover:bg-pastel-mint/20 text-left transition-colors flex items-center justify-between group"
+              className="w-full p-3 rounded-xl border border-app-border hover:border-secondary-lilac hover:bg-pastel-lavender/30 text-left transition-colors flex items-center justify-between group"
             >
               <div className="flex items-center gap-3">
-                <ShieldCheck className="w-4 h-4 text-deep-sage" />
+                <ShieldCheck className="w-4 h-4 text-deep-purple" />
                 <span className="text-xs font-semibold text-primary-text">System Audit Trail</span>
               </div>
               <ArrowRight className="w-4 h-4 text-secondary-text group-hover:translate-x-0.5 transition-transform" />
@@ -144,37 +144,37 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
         <div className="lg:col-span-2 p-6 rounded-2xl bg-white border border-app-border shadow-subtle space-y-4">
           <div className="flex items-center justify-between border-b border-app-border pb-3">
             <h3 className="text-sm font-bold uppercase tracking-wider text-primary-text flex items-center gap-2">
-              <Database className="w-4 h-4 text-deep-sage" />
+              <Database className="w-4 h-4 text-deep-purple" />
               <span>Database Engine &amp; Flyway Schema Diagnostics</span>
             </h3>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-pastel-mint text-deep-sage font-bold">
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-pastel-lavender text-deep-purple font-bold">
               ddl-auto=validate
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-            <div className="p-3.5 rounded-xl bg-light-bg/70 border border-app-border space-y-1.5">
+            <div className="p-3.5 rounded-xl bg-main-bg/70 border border-app-border space-y-1.5">
               <span className="font-semibold text-primary-text block">trg_ledger_entries_append_only</span>
               <p className="text-secondary-text text-[11px]">
                 PostgreSQL BEFORE UPDATE OR DELETE trigger actively blocks table mutations.
               </p>
-              <span className="inline-block mt-1 text-[10px] font-bold text-app-success bg-pastel-mint/80 px-2 py-0.5 rounded">
+              <span className="inline-block mt-1 text-[10px] font-bold text-app-success bg-pastel-lavender/80 px-2 py-0.5 rounded">
                 ENFORCED (PL/PGSQL)
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-light-bg/70 border border-app-border space-y-1.5">
+            <div className="p-3.5 rounded-xl bg-main-bg/70 border border-app-border space-y-1.5">
               <span className="font-semibold text-primary-text block">trg_audit_log_append_only</span>
               <p className="text-secondary-text text-[11px]">
                 Cryptographic audit trail entries are strictly append-only.
               </p>
-              <span className="inline-block mt-1 text-[10px] font-bold text-app-success bg-pastel-mint/80 px-2 py-0.5 rounded">
+              <span className="inline-block mt-1 text-[10px] font-bold text-app-success bg-pastel-lavender/80 px-2 py-0.5 rounded">
                 ENFORCED (PL/PGSQL)
               </span>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-pastel-mint/30 border border-soft-sage text-xs text-deep-sage flex items-center justify-between">
+          <div className="p-3 rounded-xl bg-pastel-lavender/30 border border-secondary-lilac text-xs text-deep-purple flex items-center justify-between">
             <span className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4" />
               <span>Cross-Tenant ID Disclosure Prevention: All foreign queries yield HTTP 404</span>
@@ -198,7 +198,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
           {DEMO_AUDIT_LOGS.map((log) => (
             <div
               key={log.id}
-              className="p-3.5 rounded-xl border border-app-border bg-light-bg/50 hover:bg-pastel-mint/10 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+              className="p-3.5 rounded-xl border border-app-border bg-main-bg/50 hover:bg-pastel-lavender/15 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
             >
               <div className="space-y-0.5">
                 <div className="flex items-center gap-2">
@@ -219,4 +219,3 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
     </div>
   );
 };
-

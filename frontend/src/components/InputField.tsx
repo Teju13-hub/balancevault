@@ -40,7 +40,7 @@ export const InputField: React.FC<InputFieldProps> = ({
             ${rightElement ? 'pr-10' : ''}
             ${error
               ? 'border-app-error focus:border-app-error focus:ring-2 focus:ring-app-error/20'
-              : 'border-app-border focus:border-sage-green focus:ring-2 focus:ring-sage-green/20 hover:border-soft-sage'
+              : 'border-app-border focus:border-accent-purple focus:ring-2 focus:ring-accent-purple/20 hover:border-secondary-lilac'
             }
             ${className}`}
           {...props}
@@ -56,4 +56,3 @@ export const InputField: React.FC<InputFieldProps> = ({
     </div>
   );
 };
-

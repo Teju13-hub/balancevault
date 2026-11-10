@@ -24,7 +24,7 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({ toasts, on
   };
 
   const bgMap = {
-    success: 'bg-white border-soft-sage',
+    success: 'bg-white border-secondary-lilac',
     error: 'bg-white border-red-200',
     warning: 'bg-white border-amber-200',
     info: 'bg-white border-blue-200',
@@ -44,7 +44,7 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({ toasts, on
           </div>
           <button
             onClick={() => onDismiss(toast.id)}
-            className="p-1 rounded-lg text-secondary-text hover:text-primary-text hover:bg-light-bg"
+            className="p-1 rounded-lg text-secondary-text hover:text-primary-text hover:bg-main-bg"
             aria-label="Dismiss notification"
           >
             <X className="w-4 h-4" />
@@ -54,4 +54,3 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({ toasts, on
     </div>
   );
 };
-

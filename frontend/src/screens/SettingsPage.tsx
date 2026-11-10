@@ -39,14 +39,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onShowToast }) => {
           subtitle="Brand visual identity specification"
           icon={<Sun className="w-5 h-5" />}
         >
-          <div className="p-4 rounded-xl bg-pastel-mint/30 border border-soft-sage flex items-center justify-between text-xs">
+          <div className="p-4 rounded-xl bg-pastel-lavender/30 border border-secondary-lilac flex items-center justify-between text-xs">
             <div className="space-y-1">
-              <span className="font-bold text-deep-sage block">Mint &amp; Sage Light Theme (Locked)</span>
+              <span className="font-bold text-deep-purple block">Lavender Dream Pastel Theme (Locked)</span>
               <p className="text-secondary-text">
-                The BalanceVault institutional design system operates in high-contrast light mode to ensure maximum readability and accessibility.
+                The BalanceVault institutional design system operates in high-contrast light mode with the Lavender Dream palette to ensure maximum readability and accessibility.
               </p>
             </div>
-            <span className="px-3 py-1 bg-white rounded-lg border border-soft-sage font-bold text-deep-sage">
+            <span className="px-3 py-1 bg-white rounded-lg border border-secondary-lilac font-bold text-deep-purple">
               Active
             </span>
           </div>
@@ -67,7 +67,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onShowToast }) => {
               <select
                 value={sessionTimeout}
                 onChange={(e) => setSessionTimeout(e.target.value)}
-                className="bg-light-bg rounded-xl border border-app-border px-3 py-1.5 text-xs font-semibold text-primary-text focus:outline-none focus:border-sage-green"
+                className="bg-light-bg rounded-xl border border-app-border px-3 py-1.5 text-xs font-semibold text-primary-text focus:outline-none focus:border-accent-purple"
               >
                 <option value="5">5 Minutes</option>
                 <option value="15">15 Minutes (Recommended)</option>
@@ -85,7 +85,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onShowToast }) => {
                 type="checkbox"
                 checked={requireTwoFactor}
                 onChange={(e) => setRequireTwoFactor(e.target.checked)}
-                className="w-4 h-4 rounded border-app-border text-deep-sage focus:ring-sage-green"
+                className="w-4 h-4 rounded border-app-border text-deep-purple focus:ring-accent-purple"
               />
             </div>
 
@@ -117,7 +117,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onShowToast }) => {
                 type="checkbox"
                 checked={notifyTransactions}
                 onChange={(e) => setNotifyTransactions(e.target.checked)}
-                className="w-4 h-4 rounded border-app-border text-deep-sage focus:ring-sage-green"
+                className="w-4 h-4 rounded border-app-border text-deep-purple focus:ring-accent-purple"
               />
             </label>
 
@@ -130,7 +130,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onShowToast }) => {
                 type="checkbox"
                 checked={notifyLogins}
                 onChange={(e) => setNotifyLogins(e.target.checked)}
-                className="w-4 h-4 rounded border-app-border text-deep-sage focus:ring-sage-green"
+                className="w-4 h-4 rounded border-app-border text-deep-purple focus:ring-accent-purple"
               />
             </label>
           </div>

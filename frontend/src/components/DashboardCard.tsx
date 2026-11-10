@@ -9,7 +9,7 @@ interface DashboardCardProps {
   className?: string;
   headerClassName?: string;
   bodyClassName?: string;
-  variant?: 'white' | 'mint' | 'outline';
+  variant?: 'white' | 'mint' | 'lavender' | 'outline';
 }
 
 export const DashboardCard: React.FC<DashboardCardProps> = ({
@@ -25,7 +25,8 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
 }) => {
   const variantClasses = {
     white: 'bg-white border-app-border shadow-subtle',
-    mint: 'bg-pastel-mint/30 border-soft-sage shadow-subtle',
+    mint: 'bg-pastel-lavender/30 border-secondary-lilac shadow-subtle',
+    lavender: 'bg-pastel-lavender/30 border-secondary-lilac shadow-subtle',
     outline: 'bg-transparent border-dashed border-app-border',
   };
 
@@ -35,7 +36,7 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
         <div className={`px-6 pt-5 pb-4 flex items-center justify-between border-b border-app-border/70 ${headerClassName}`}>
           <div className="flex items-center gap-3">
             {icon && (
-              <div className="w-9 h-9 rounded-xl bg-pastel-mint/50 flex items-center justify-center text-deep-sage shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-pastel-lavender/60 flex items-center justify-center text-deep-purple shrink-0">
                 {icon}
               </div>
             )}
@@ -53,4 +54,3 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
     </div>
   );
 };
-

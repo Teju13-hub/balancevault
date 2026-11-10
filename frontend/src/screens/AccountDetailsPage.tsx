@@ -61,7 +61,7 @@ export const AccountDetailsPage: React.FC<AccountDetailsPageProps> = ({
       accessor: (row) => (
         <span
           className={`px-2 py-0.5 rounded text-[11px] font-bold ${
-            row.type === 'CREDIT' ? 'bg-pastel-mint text-app-success' : 'bg-gray-100 text-secondary-text'
+            row.type === 'CREDIT' ? 'bg-pastel-lavender text-app-success' : 'bg-main-bg text-secondary-text'
           }`}
         >
           {row.type}
@@ -132,8 +132,8 @@ export const AccountDetailsPage: React.FC<AccountDetailsPageProps> = ({
             onClick={() => setSelectedAccountId(acc.id)}
             className={`px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
               selectedAccountId === acc.id
-                ? 'bg-deep-sage text-white border-deep-sage shadow-sm'
-                : 'bg-white text-secondary-text border-app-border hover:bg-pastel-mint/20 hover:text-primary-text'
+                ? 'bg-deep-purple text-white border-deep-purple shadow-sm'
+                : 'bg-white text-secondary-text border-app-border hover:bg-pastel-lavender/30 hover:text-primary-text'
             }`}
           >
             {acc.accountName} • {acc.currency}
@@ -157,7 +157,7 @@ export const AccountDetailsPage: React.FC<AccountDetailsPageProps> = ({
           </div>
           <div className="mt-6 pt-4 border-t border-app-border flex items-center justify-between text-xs text-secondary-text">
             <span>Tier Level</span>
-            <span className="font-semibold text-deep-sage">{account.type}</span>
+            <span className="font-semibold text-deep-purple">{account.type}</span>
           </div>
         </div>
 
@@ -174,14 +174,14 @@ export const AccountDetailsPage: React.FC<AccountDetailsPageProps> = ({
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setShowFullAccount(!showFullAccount)}
-                  className="p-1 text-secondary-text hover:text-deep-sage"
+                  className="p-1 text-secondary-text hover:text-deep-purple"
                   aria-label="Toggle account masking"
                 >
                   {showFullAccount ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
                 <button
                   onClick={() => handleCopy(account.accountNumber)}
-                  className="p-1 text-secondary-text hover:text-deep-sage"
+                  className="p-1 text-secondary-text hover:text-deep-purple"
                   aria-label="Copy account number"
                 >
                   {copied ? <Check className="w-4 h-4 text-app-success" /> : <Copy className="w-4 h-4" />}
@@ -201,15 +201,15 @@ export const AccountDetailsPage: React.FC<AccountDetailsPageProps> = ({
             Security &amp; Compliance
           </span>
           <div className="flex items-center gap-2.5 text-xs text-primary-text">
-            <ShieldCheck className="w-4 h-4 text-deep-sage shrink-0" />
+            <ShieldCheck className="w-4 h-4 text-deep-purple shrink-0" />
             <span>Append-only DB triggers active</span>
           </div>
           <div className="flex items-center gap-2.5 text-xs text-primary-text">
-            <Lock className="w-4 h-4 text-deep-sage shrink-0" />
+            <Lock className="w-4 h-4 text-deep-purple shrink-0" />
             <span>Strict tenant boundary verified</span>
           </div>
           <div className="flex items-center gap-2.5 text-xs text-primary-text">
-            <Calendar className="w-4 h-4 text-deep-sage shrink-0" />
+            <Calendar className="w-4 h-4 text-deep-purple shrink-0" />
             <span>Created on {account.createdAt}</span>
           </div>
         </div>

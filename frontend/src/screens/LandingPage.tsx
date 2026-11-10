@@ -22,12 +22,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
       <header className="border-b border-app-border bg-white/90 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-deep-sage flex items-center justify-center text-white shadow-sm">
+            <div className="w-11 h-11 rounded-2xl bg-deep-purple flex items-center justify-center text-white shadow-sm">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
               <span className="font-extrabold text-lg tracking-tight text-primary-text block">
-                BALANCE<span className="text-deep-sage">VAULT</span>
+                BALANCE<span className="text-deep-purple">VAULT</span>
               </span>
               <span className="text-[10px] uppercase font-bold tracking-widest text-secondary-text block">
                 Trust in Every Transaction
@@ -51,14 +51,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
         <section className="relative overflow-hidden pt-16 pb-20 lg:pt-24 lg:pb-32 px-6">
           <div className="max-w-5xl mx-auto text-center relative z-10">
             {/* Pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pastel-mint border border-soft-sage text-deep-sage text-xs font-semibold mb-8 shadow-subtle">
-              <span className="w-2 h-2 rounded-full bg-app-success animate-pulse" />
-              <span>Phase 2 Mint &amp; Sage Design System Live</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pastel-lavender border border-secondary-lilac text-deep-purple text-xs font-semibold mb-8 shadow-subtle">
+              <span className="w-2 h-2 rounded-full bg-accent-purple animate-pulse" />
+              <span>Lavender Dream Pastel Theme Live</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-primary-text leading-[1.15]">
               Institutional-Grade Money Movement with{' '}
-              <span className="text-deep-sage underline decoration-soft-sage decoration-wavy decoration-2">
+              <span className="text-deep-purple underline decoration-secondary-lilac decoration-wavy decoration-2">
                 Absolute Proof
               </span>
             </h1>
@@ -92,22 +92,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             <div className="mt-16 pt-12 border-t border-app-border grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
               <div className="p-4 rounded-xl bg-white border border-app-border shadow-subtle">
                 <span className="text-xs uppercase font-semibold text-secondary-text tracking-wider">Precision</span>
-                <p className="text-2xl font-bold text-deep-sage mt-1">NUMERIC(19,4)</p>
+                <p className="text-2xl font-bold text-deep-purple mt-1">NUMERIC(19,4)</p>
                 <p className="text-[11px] text-secondary-text mt-0.5">Zero floating-point rounding errors</p>
               </div>
               <div className="p-4 rounded-xl bg-white border border-app-border shadow-subtle">
                 <span className="text-xs uppercase font-semibold text-secondary-text tracking-wider">Integrity</span>
-                <p className="text-2xl font-bold text-deep-sage mt-1">Append-Only</p>
+                <p className="text-2xl font-bold text-deep-purple mt-1">Append-Only</p>
                 <p className="text-[11px] text-secondary-text mt-0.5">Enforced via DB triggers</p>
               </div>
               <div className="p-4 rounded-xl bg-white border border-app-border shadow-subtle">
                 <span className="text-xs uppercase font-semibold text-secondary-text tracking-wider">Access Control</span>
-                <p className="text-2xl font-bold text-deep-sage mt-1">Zero Leakage</p>
+                <p className="text-2xl font-bold text-deep-purple mt-1">Zero Leakage</p>
                 <p className="text-[11px] text-secondary-text mt-0.5">404 on cross-account probes</p>
               </div>
               <div className="p-4 rounded-xl bg-white border border-app-border shadow-subtle">
                 <span className="text-xs uppercase font-semibold text-secondary-text tracking-wider">Security</span>
-                <p className="text-2xl font-bold text-deep-sage mt-1">BCrypt + JWT</p>
+                <p className="text-2xl font-bold text-deep-purple mt-1">BCrypt + JWT</p>
                 <p className="text-[11px] text-secondary-text mt-0.5">Stateless role-verified sessions</p>
               </div>
             </div>
@@ -118,7 +118,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
         <section className="py-20 bg-white border-y border-app-border px-6">
           <div className="max-w-7xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <span className="text-xs font-bold uppercase tracking-widest text-deep-sage">Core Architecture</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-deep-purple">Core Architecture</span>
               <h2 className="text-3xl font-extrabold tracking-tight text-primary-text mt-2">
                 Engineered for High-Reliability Finance
               </h2>
@@ -129,7 +129,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="bg-light-bg rounded-2xl p-8 border border-app-border shadow-subtle hover:shadow-card transition-all">
-                <div className="w-12 h-12 rounded-xl bg-pastel-mint border border-soft-sage flex items-center justify-center text-deep-sage mb-6">
+                <div className="w-12 h-12 rounded-xl bg-pastel-lavender border border-secondary-lilac flex items-center justify-center text-deep-purple mb-6">
                   <Database className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-primary-text mb-2">Immutable Double-Entry Ledger</h3>
@@ -139,7 +139,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
               </div>
 
               <div className="bg-light-bg rounded-2xl p-8 border border-app-border shadow-subtle hover:shadow-card transition-all">
-                <div className="w-12 h-12 rounded-xl bg-pastel-mint border border-soft-sage flex items-center justify-center text-deep-sage mb-6">
+                <div className="w-12 h-12 rounded-xl bg-pastel-lavender border border-secondary-lilac flex items-center justify-center text-deep-purple mb-6">
                   <Lock className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-primary-text mb-2">Server-Side Ownership Verification</h3>
@@ -149,7 +149,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
               </div>
 
               <div className="bg-light-bg rounded-2xl p-8 border border-app-border shadow-subtle hover:shadow-card transition-all">
-                <div className="w-12 h-12 rounded-xl bg-pastel-mint border border-soft-sage flex items-center justify-center text-deep-sage mb-6">
+                <div className="w-12 h-12 rounded-xl bg-pastel-lavender border border-secondary-lilac flex items-center justify-center text-deep-purple mb-6">
                   <FileCheck className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-primary-text mb-2">Continuous Audit Traceability</h3>
@@ -167,9 +167,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>© 2026 BalanceVault. Trust in Every Transaction. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <span className="hover:text-deep-sage cursor-pointer">Security Protocol</span>
-            <span className="hover:text-deep-sage cursor-pointer">Flyway Validated</span>
-            <span className="hover:text-deep-sage cursor-pointer">Privacy Notice</span>
+            <span className="hover:text-deep-purple cursor-pointer">Security Protocol</span>
+            <span className="hover:text-deep-purple cursor-pointer">Flyway Validated</span>
+            <span className="hover:text-deep-purple cursor-pointer">Privacy Notice</span>
           </div>
         </div>
       </footer>

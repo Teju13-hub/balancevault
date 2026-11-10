@@ -54,14 +54,14 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
   return (
     <div className="space-y-6">
       {/* Synthetic Demo Disclaimer Banner */}
-      <div className="p-3.5 rounded-2xl bg-pastel-mint/40 border border-soft-sage flex items-center justify-between text-xs text-deep-sage">
+      <div className="p-3.5 rounded-2xl bg-pastel-lavender/40 border border-secondary-lilac flex items-center justify-between text-xs text-deep-purple">
         <div className="flex items-center gap-2">
-          <Info className="w-4 h-4 text-deep-sage shrink-0" />
+          <Info className="w-4 h-4 text-deep-purple shrink-0" />
           <span>
             <strong>Demonstration Environment:</strong> Displaying synthetic client data. Real money movement is strictly isolated to backend ledger verification.
           </span>
         </div>
-        <span className="hidden sm:inline font-mono text-[11px] bg-white/80 px-2 py-0.5 rounded border border-soft-sage font-medium">
+        <span className="hidden sm:inline font-mono text-[11px] bg-white/80 px-2 py-0.5 rounded border border-secondary-lilac font-medium">
           Flyway Validated
         </span>
       </div>
@@ -69,7 +69,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
       {/* Welcome Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-deep-sage">Overview</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-deep-purple">Overview</span>
           <h2 className="text-2xl lg:text-3xl font-extrabold text-primary-text tracking-tight mt-0.5">
             Welcome back, {DEMO_USER.fullName}
           </h2>
@@ -132,32 +132,32 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
           change="Protected"
           trend="up"
           timeframe="Continuous"
-          icon={<ShieldCheck className="w-5 h-5 text-deep-sage" />}
+          icon={<ShieldCheck className="w-5 h-5 text-deep-purple" />}
         />
       </div>
 
       {/* Account Balance Showcase & Activity Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Vault Balance Card */}
-        <div className="lg:col-span-1 rounded-2xl bg-gradient-to-br from-deep-sage via-[#395e4b] to-[#2b4739] text-white p-6 shadow-card flex flex-col justify-between relative overflow-hidden">
+        <div className="lg:col-span-1 rounded-2xl bg-gradient-to-br from-deep-purple via-[#423758] to-[#30283d] text-white p-6 shadow-card flex flex-col justify-between relative overflow-hidden">
           {/* Subtle background ornamentation */}
           <div className="absolute -right-8 -bottom-8 w-40 h-40 rounded-full bg-white/5 pointer-events-none" />
-          <div className="absolute right-12 top-4 w-20 h-20 rounded-full bg-pastel-mint/10 pointer-events-none" />
+          <div className="absolute right-12 top-4 w-20 h-20 rounded-full bg-pastel-lavender/10 pointer-events-none" />
 
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-soft-sage">
+              <span className="text-xs font-semibold uppercase tracking-wider text-secondary-lilac">
                 {primaryAccount.accountName}
               </span>
               <StatusBadge status={primaryAccount.status} size="sm" className="bg-white/20 text-white border-white/30" />
             </div>
 
             <div className="mt-4">
-              <span className="text-xs text-soft-sage block">Available Vault Balance</span>
+              <span className="text-xs text-secondary-lilac block">Available Vault Balance</span>
               <div className="text-3xl font-extrabold tracking-tight mt-1">
                 ${primaryAccount.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
               </div>
-              <span className="text-[11px] text-soft-sage/80 font-mono mt-0.5 block">
+              <span className="text-[11px] text-secondary-lilac/80 font-mono mt-0.5 block">
                 Standard: NUMERIC(19,4) Precision
               </span>
             </div>
@@ -165,25 +165,25 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
 
           <div className="mt-8 pt-5 border-t border-white/15">
             <div className="flex items-center justify-between text-xs mb-2">
-              <span className="text-soft-sage">Account Number</span>
+              <span className="text-secondary-lilac">Account Number</span>
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setShowFullAccount(!showFullAccount)}
-                  className="p-1 rounded hover:bg-white/10 text-soft-sage hover:text-white transition-colors"
+                  className="p-1 rounded hover:bg-white/10 text-secondary-lilac hover:text-white transition-colors"
                   aria-label={showFullAccount ? 'Mask account number' : 'Show account number'}
                 >
                   {showFullAccount ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                 </button>
                 <button
                   onClick={handleCopy}
-                  className="p-1 rounded hover:bg-white/10 text-soft-sage hover:text-white transition-colors"
+                  className="p-1 rounded hover:bg-white/10 text-secondary-lilac hover:text-white transition-colors"
                   aria-label="Copy account number"
                 >
-                  {copied ? <Check className="w-3.5 h-3.5 text-pastel-mint" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copied ? <Check className="w-3.5 h-3.5 text-pastel-lavender" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
               </div>
             </div>
-            <p className="font-mono text-sm tracking-wider font-semibold text-pastel-mint">
+            <p className="font-mono text-sm tracking-wider font-semibold text-pastel-lavender">
               {showFullAccount ? primaryAccount.accountNumber : primaryAccount.maskedAccountNumber}
             </p>
           </div>
@@ -191,7 +191,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
           <div className="mt-6 flex items-center gap-2">
             <button
               onClick={() => onNavigate('transfer')}
-              className="flex-1 py-2 px-3 bg-white text-deep-sage font-bold text-xs rounded-xl hover:bg-pastel-mint transition-colors text-center"
+              className="flex-1 py-2 px-3 bg-white text-deep-purple font-bold text-xs rounded-xl hover:bg-pastel-lavender transition-colors text-center"
             >
               Transfer
             </button>
@@ -212,11 +212,11 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
             action={
               <div className="flex items-center gap-4 text-xs">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-deep-sage" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-deep-purple" />
                   <span className="text-secondary-text">Inflows</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-soft-sage" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-secondary-lilac" />
                   <span className="text-secondary-text">Outflows</span>
                 </div>
               </div>
@@ -230,7 +230,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                     {/* Inflows Bar */}
                     <div
                       style={{ height: `${(item.inflows / 100) * 100}%` }}
-                      className="w-full max-w-[20px] bg-deep-sage rounded-t-lg transition-all duration-500 hover:brightness-110 relative group"
+                      className="w-full max-w-[20px] bg-deep-purple rounded-t-lg transition-all duration-500 hover:brightness-110 relative group"
                     >
                       <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-primary-text text-white text-[10px] py-0.5 px-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                         ${item.inflows}k
@@ -239,7 +239,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                     {/* Outflows Bar */}
                     <div
                       style={{ height: `${(item.outflows / 100) * 100}%` }}
-                      className="w-full max-w-[20px] bg-soft-sage rounded-t-lg transition-all duration-500 hover:brightness-95 relative group"
+                      className="w-full max-w-[20px] bg-secondary-lilac rounded-t-lg transition-all duration-500 hover:brightness-95 relative group"
                     >
                       <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-primary-text text-white text-[10px] py-0.5 px-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                         ${item.outflows}k

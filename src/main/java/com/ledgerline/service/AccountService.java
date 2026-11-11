@@ -22,15 +22,17 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final AuditService auditService;
     private final SecureRandom random = new SecureRandom();
 
-    public AccountService(AccountRepository accountRepository, UserRepository userRepository) {
+    public AccountService(AccountRepository accountRepository, UserRepository userRepository, AuditService auditService) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
+        this.auditService = auditService;
     }
 
     @Transactional
-    public AccountResponse createAccount(CreateAccountRequest request, String username) {
+    public AccountResponse createAccount(CreateAccountRequest request, String username, String ipAddress) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
@@ -42,7 +44,13 @@ public class AccountService {
         Account account = new Account(accountNumber, user, currency, BigDecimal.ZERO.setScale(4));
         Account savedAccount = accountRepository.save(account);
 
+        auditService.logAccountCreated(user.getId(), savedAccount.getId(), savedAccount.getAccountNumber(), user.getUsername(), ipAddress);
+
         return toResponse(savedAccount);
+    }
+
+    public AccountResponse createAccount(CreateAccountRequest request, String username) {
+        return createAccount(request, username, "127.0.0.1");
     }
 
     @Transactional(readOnly = true)
@@ -85,4 +93,3 @@ public class AccountService {
         );
     }
 }
-

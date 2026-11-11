@@ -54,7 +54,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception ex) {
-            // Invalid token will result in empty SecurityContext, triggering AuthenticationEntryPoint
+            // Invalid, expired, or malformed token: ensure SecurityContext is empty
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);

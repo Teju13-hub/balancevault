@@ -4,6 +4,7 @@ import com.ledgerline.dto.AuthResponse;
 import com.ledgerline.dto.LoginRequest;
 import com.ledgerline.dto.RegisterRequest;
 import com.ledgerline.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        AuthResponse response = authService.login(request);
+    public ResponseEntity<AuthResponse> login(
+            @Valid @RequestBody LoginRequest request,
+            HttpServletRequest servletRequest) {
+        String clientIp = servletRequest.getRemoteAddr() != null ? servletRequest.getRemoteAddr() : "unknown";
+        AuthResponse response = authService.login(request, clientIp);
         return ResponseEntity.ok(response);
     }
 }
-

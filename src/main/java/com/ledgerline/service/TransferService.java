@@ -133,7 +133,22 @@ public class TransferService {
             }
         }
 
-        // 3. Concurrency Safety: Pessimistic Row Locking in Ascending Account ID Order
+        // 3. Role-Based Access Control: AUDITOR and non-account holders cannot initiate transfers
+        boolean isAuditor = authorities != null && authorities.stream().anyMatch(a ->
+                a.getAuthority().equals("ROLE_" + Role.AUDITOR.name())
+        );
+
+        boolean isAccountHolder = authorities != null && authorities.stream().anyMatch(a ->
+                a.getAuthority().equals("ROLE_" + Role.ACCOUNT_HOLDER.name())
+        );
+
+        if (isAuditor || !isAccountHolder) {
+            auditService.logTransferRejected(user.getId(), request.getSourceAccountId(), request.getDestinationAccountId(),
+                    request.getAmount(), "Auditor or non-account holder denied transfer initiation", ipAddress);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Auditors and non-account holders cannot initiate transfers");
+        }
+
+        // 4. Concurrency Safety: Pessimistic Row Locking in Ascending Account ID Order
         Long sourceId = request.getSourceAccountId();
         Long destId = request.getDestinationAccountId();
 

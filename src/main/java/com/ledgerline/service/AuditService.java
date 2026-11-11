@@ -25,6 +25,57 @@ public class AuditService {
         this.userRepository = userRepository;
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public AuditLog logLoginSuccess(Long userId, String username, String ipAddress) {
+        try {
+            User user = userId != null ? userRepository.findById(userId).orElse(null) : null;
+            String details = String.format("User %s authenticated successfully", username);
+            AuditLog audit = new AuditLog(user, "LOGIN_SUCCESS", "USER", String.valueOf(userId), details, ipAddress);
+            return auditLogRepository.save(audit);
+        } catch (Exception e) {
+            log.error("Failed to write audit log for LOGIN_SUCCESS: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public AuditLog logLoginFailed(String attemptedUsername, String ipAddress) {
+        try {
+            // Note: Never log passwords or secrets
+            String details = String.format("Failed login attempt for username: %s", attemptedUsername);
+            AuditLog audit = new AuditLog(null, "LOGIN_FAILED", "USER", attemptedUsername, details, ipAddress);
+            return auditLogRepository.save(audit);
+        } catch (Exception e) {
+            log.error("Failed to write audit log for LOGIN_FAILED: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public AuditLog logAccountCreated(Long userId, Long accountId, String accountNumber, String username, String ipAddress) {
+        try {
+            User user = userId != null ? userRepository.findById(userId).orElse(null) : null;
+            String details = String.format("Account %s created for user %s", accountNumber, username);
+            AuditLog audit = new AuditLog(user, "ACCOUNT_CREATED", "ACCOUNT", String.valueOf(accountId), details, ipAddress);
+            return auditLogRepository.save(audit);
+        } catch (Exception e) {
+            log.error("Failed to write audit log for ACCOUNT_CREATED: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public AuditLog logAdminAction(Long userId, String action, String entityType, String entityId, String details, String ipAddress) {
+        try {
+            User user = userId != null ? userRepository.findById(userId).orElse(null) : null;
+            AuditLog audit = new AuditLog(user, action, entityType, entityId, details, ipAddress);
+            return auditLogRepository.save(audit);
+        } catch (Exception e) {
+            log.error("Failed to write audit log for ADMIN_ACTION: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
     @Transactional
     public AuditLog logTransferInitiated(Long userId, String referenceId, Long sourceAccountId, Long destinationAccountId, BigDecimal amount, String ipAddress) {
         try {

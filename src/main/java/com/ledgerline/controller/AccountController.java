@@ -3,12 +3,13 @@ package com.ledgerline.controller;
 import com.ledgerline.dto.AccountResponse;
 import com.ledgerline.dto.CreateAccountRequest;
 import com.ledgerline.service.AccountService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 @RestController
@@ -22,10 +23,13 @@ public class AccountController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ACCOUNT_HOLDER') or hasRole('ADMIN')")
     public ResponseEntity<AccountResponse> createAccount(
             @RequestBody(required = false) CreateAccountRequest request,
-            Authentication authentication) {
-        AccountResponse response = accountService.createAccount(request, authentication.getName());
+            Authentication authentication,
+            HttpServletRequest servletRequest) {
+        String clientIp = servletRequest.getRemoteAddr() != null ? servletRequest.getRemoteAddr() : "unknown";
+        AccountResponse response = accountService.createAccount(request, authentication.getName(), clientIp);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -60,4 +64,3 @@ public class AccountController {
         return ResponseEntity.ok(balanceResponse);
     }
 }
-

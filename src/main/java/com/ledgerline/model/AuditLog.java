@@ -36,6 +36,16 @@ public class AuditLog {
     public AuditLog() {
     }
 
+    public AuditLog(User user, String action, String entityType, String entityId, String details, String ipAddress) {
+        this.user = user;
+        this.action = action;
+        this.entityType = entityType;
+        this.entityId = entityId;
+        this.details = details;
+        this.ipAddress = ipAddress;
+        this.createdAt = Instant.now();
+    }
+
     public Long getId() {
         return id;
     }

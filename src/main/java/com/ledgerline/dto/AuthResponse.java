@@ -5,6 +5,8 @@ public class AuthResponse {
     private String token;
     private String tokenType = "Bearer";
     private String username;
+    private String email;
+    private String fullName;
     private String role;
 
     public AuthResponse() {
@@ -13,6 +15,16 @@ public class AuthResponse {
     public AuthResponse(String token, String username, String role) {
         this.token = token;
         this.username = username;
+        this.email = username + "@balancevault.com";
+        this.fullName = username;
+        this.role = role;
+    }
+
+    public AuthResponse(String token, String username, String email, String fullName, String role) {
+        this.token = token;
+        this.username = username;
+        this.email = email;
+        this.fullName = fullName != null && !fullName.trim().isEmpty() ? fullName : username;
         this.role = role;
     }
 
@@ -40,6 +52,22 @@ public class AuthResponse {
         this.username = username;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     public String getRole() {
         return role;
     }
@@ -48,4 +76,3 @@ public class AuthResponse {
         this.role = role;
     }
 }
-

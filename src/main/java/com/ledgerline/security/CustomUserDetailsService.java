@@ -20,9 +20,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
+        if (identifier == null || identifier.trim().isEmpty()) {
+            throw new UsernameNotFoundException("Identifier cannot be empty");
+        }
+
+        final String cleanId = identifier.trim();
+        User user = userRepository.findByEmailIgnoreCase(cleanId)
+                .or(() -> userRepository.findByEmail(cleanId))
+                .or(() -> userRepository.findByUsername(cleanId))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with identifier: " + cleanId));
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
@@ -31,4 +38,3 @@ public class CustomUserDetailsService implements UserDetailsService {
         );
     }
 }
-

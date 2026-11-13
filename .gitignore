@@ -30,5 +30,49 @@ target/
 
 ### Environment / local files ###
 .env
+.env.local
+.env.*.local
+!.env.example
 *.local
+*.dump
+*.log
+logs/
+
+### Frontend dependencies & build output ###
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+*.tsbuildinfo
+
+### Scratch & temporary design assets ###
+frontend/src/assets/crop_*
+frontend/src/assets/inspect_*
+frontend/src/assets/test_*
+frontend/src/assets/test-*
+frontend/src/assets/check_*
+frontend/src/assets/band*
+frontend/src/assets/*_exact.png
+frontend/src/assets/*_crop.png
+frontend/src/assets/orig_*
+frontend/src/assets/ref_*
+frontend/src/assets/verified_*
+frontend/src/assets/verify_*
+frontend/src/assets/bottom_slice.png
+frontend/src/assets/bl_top_part.png
+frontend/public/hero-left.jpg
+frontend/public/vault-artwork.jpg
+frontend/public/vault-cover.jpg
+frontend/public/vault-3d-scene.jpg
+frontend/public/login-canvas-clean.jpg
+frontend/src/assets/hero-left.jpg
+frontend/src/assets/vault-artwork.jpg
+frontend/src/assets/vault-cover.jpg
+frontend/src/assets/vault-3d-scene.jpg
+frontend/src/assets/vault-hero*
+frontend/src/assets/login-canvas-clean.jpg
+frontend/src/assets/final_check_*
+frontend/src/assets/balancevault-login-screen.jpg
+frontend/public/balancevault-login-screen.jpg
+frontend/public/vault-hero-blended.png
 

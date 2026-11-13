@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 
 public class RegisterRequest {
 
+    private String fullName;
+
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;
@@ -18,6 +20,9 @@ public class RegisterRequest {
     @Size(min = 8, max = 100, message = "Password must be at least 8 characters")
     private String password;
 
+    // Any role submitted through public registration is strictly ignored on server
+    private String role;
+
     public RegisterRequest() {
     }
 
@@ -25,6 +30,22 @@ public class RegisterRequest {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.fullName = username;
+    }
+
+    public RegisterRequest(String username, String email, String password, String fullName) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getUsername() {
@@ -50,5 +71,12 @@ public class RegisterRequest {
     public void setPassword(String password) {
         this.password = password;
     }
-}
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+}

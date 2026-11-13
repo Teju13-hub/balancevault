@@ -17,8 +17,8 @@ public class Account {
     @Column(name = "account_number", nullable = false, unique = true, length = 34)
     private String accountNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(nullable = false, length = 3)
@@ -26,6 +26,9 @@ public class Account {
 
     @Column(nullable = false, precision = 19, scale = 4)
     private BigDecimal balance = BigDecimal.ZERO.setScale(4);
+
+    @Column(nullable = false, length = 20)
+    private String status = "ACTIVE";
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
@@ -88,6 +91,14 @@ public class Account {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance != null ? balance.setScale(4) : BigDecimal.ZERO.setScale(4);
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Instant getCreatedAt() {

@@ -2,7 +2,7 @@ package com.ledgerline.dto;
 
 public class CreateAccountRequest {
 
-    private String currency = "USD";
+    private String currency = "INR";
 
     public CreateAccountRequest() {
     }

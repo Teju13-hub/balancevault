@@ -88,8 +88,18 @@ public class TransferService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Transfer request cannot be empty");
         }
 
-        if (request.getSourceAccountId() == null || request.getDestinationAccountId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Source and destination account IDs are required");
+        if (request.getSourceAccountId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Source account ID is required");
+        }
+
+        if (request.getDestinationAccountId() == null) {
+            if (request.getDestinationAccountNumber() != null && !request.getDestinationAccountNumber().isBlank()) {
+                Account destAcc = accountRepository.findByAccountNumber(request.getDestinationAccountNumber().trim())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Destination account not found: " + request.getDestinationAccountNumber()));
+                request.setDestinationAccountId(destAcc.getId());
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination account ID or account number is required");
+            }
         }
 
         if (request.getAmount() == null || request.getAmount().compareTo(BigDecimal.ZERO) <= 0) {

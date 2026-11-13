@@ -2,6 +2,7 @@ package com.ledgerline.repository;
 
 import com.ledgerline.model.Account;
 import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,11 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByAccountNumber(String accountNumber);
     List<Account> findAllByUser_Username(String username);
     boolean existsByAccountNumber(String accountNumber);
+    long countByStatus(String status);
+    List<Account> findAllByUser_Id(Long userId);
+
+    @EntityGraph(attributePaths = {"user"})
+    List<Account> findAllByOrderByCreatedAtDesc();
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Account a WHERE a.id = :id")

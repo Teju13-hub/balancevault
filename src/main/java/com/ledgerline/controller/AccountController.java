@@ -33,6 +33,12 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping
+    public ResponseEntity<java.util.List<AccountResponse>> listMyAccounts(Authentication authentication) {
+        java.util.List<AccountResponse> accounts = accountService.getAccountsForUser(authentication.getName());
+        return ResponseEntity.ok(accounts);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<AccountResponse> getAccount(
             @PathVariable Long id,
@@ -62,5 +68,44 @@ public class AccountController {
                 "balance", account.getBalance()
         );
         return ResponseEntity.ok(balanceResponse);
+    }
+
+    @GetMapping("/lookup")
+    public ResponseEntity<AccountResponse> lookupAccount(@RequestParam String accountNumber) {
+        AccountResponse account = accountService.lookupAccount(accountNumber);
+        return ResponseEntity.ok(account);
+    }
+
+    @GetMapping("/{id}/transactions")
+    public ResponseEntity<java.util.List<com.ledgerline.dto.LedgerEntryResponse>> getAccountTransactions(
+            @PathVariable Long id,
+            Authentication authentication) {
+        java.util.List<com.ledgerline.dto.LedgerEntryResponse> transactions =
+                accountService.getTransactionsForAccount(id, authentication.getName(), authentication.getAuthorities());
+        return ResponseEntity.ok(transactions);
+    }
+
+    @PostMapping("/{id}/deposits")
+    @PreAuthorize("hasRole('ACCOUNT_HOLDER') or hasRole('ADMIN')")
+    public ResponseEntity<AccountResponse> deposit(
+            @PathVariable Long id,
+            @jakarta.validation.Valid @RequestBody com.ledgerline.dto.DepositWithdrawRequest request,
+            Authentication authentication,
+            HttpServletRequest servletRequest) {
+        String clientIp = servletRequest.getRemoteAddr() != null ? servletRequest.getRemoteAddr() : "unknown";
+        AccountResponse response = accountService.deposit(id, request, authentication.getName(), authentication.getAuthorities(), clientIp);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/withdrawals")
+    @PreAuthorize("hasRole('ACCOUNT_HOLDER') or hasRole('ADMIN')")
+    public ResponseEntity<AccountResponse> withdraw(
+            @PathVariable Long id,
+            @jakarta.validation.Valid @RequestBody com.ledgerline.dto.DepositWithdrawRequest request,
+            Authentication authentication,
+            HttpServletRequest servletRequest) {
+        String clientIp = servletRequest.getRemoteAddr() != null ? servletRequest.getRemoteAddr() : "unknown";
+        AccountResponse response = accountService.withdraw(id, request, authentication.getName(), authentication.getAuthorities(), clientIp);
+        return ResponseEntity.ok(response);
     }
 }

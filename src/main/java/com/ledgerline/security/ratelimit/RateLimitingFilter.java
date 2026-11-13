@@ -46,8 +46,13 @@ public class RateLimitingFilter extends OncePerRequestFilter {
                     sendRateLimitExceededResponse(request, response);
                     return;
                 }
-            } else if (uri.endsWith("/api/v1/auth/register")) {
+            } else if (uri.contains("/api/v1/auth/register")) {
                 if (!rateLimiterService.tryConsumeRegister(clientIp)) {
+                    sendRateLimitExceededResponse(request, response);
+                    return;
+                }
+            } else if (uri.contains("/api/v1/auth/forgot-password") || uri.contains("/api/v1/auth/reset-password")) {
+                if (!rateLimiterService.tryConsumeForgotPassword(clientIp)) {
                     sendRateLimitExceededResponse(request, response);
                     return;
                 }

@@ -20,6 +20,7 @@ public class RateLimiterService {
 
     private final ConcurrentHashMap<String, TokenBucket> loginBuckets = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, TokenBucket> registerBuckets = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, TokenBucket> forgotPasswordBuckets = new ConcurrentHashMap<>();
 
     public boolean tryConsumeLogin(String clientIp) {
         String key = (clientIp != null && !clientIp.isBlank()) ? clientIp : "unknown";
@@ -29,6 +30,11 @@ public class RateLimiterService {
     public boolean tryConsumeRegister(String clientIp) {
         String key = (clientIp != null && !clientIp.isBlank()) ? clientIp : "unknown";
         return registerBuckets.computeIfAbsent(key, k -> new TokenBucket(DEFAULT_CAPACITY, DEFAULT_REFILL_PER_SECOND)).tryConsume();
+    }
+
+    public boolean tryConsumeForgotPassword(String clientIp) {
+        String key = (clientIp != null && !clientIp.isBlank()) ? clientIp : "unknown";
+        return forgotPasswordBuckets.computeIfAbsent(key, k -> new TokenBucket(DEFAULT_CAPACITY, DEFAULT_REFILL_PER_SECOND)).tryConsume();
     }
 
     /**
@@ -49,6 +55,7 @@ public class RateLimiterService {
     public void reset() {
         loginBuckets.clear();
         registerBuckets.clear();
+        forgotPasswordBuckets.clear();
     }
 }
 

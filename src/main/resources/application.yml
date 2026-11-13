@@ -22,9 +22,14 @@ spring:
     locations: classpath:db/migration
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
+admin:
+  username: ${ADMIN_USERNAME:admin}
+  email: ${ADMIN_EMAIL:admin@ledgerline.local}
+  initial-password: ${ADMIN_INITIAL_PASSWORD:}
+
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8081}
 

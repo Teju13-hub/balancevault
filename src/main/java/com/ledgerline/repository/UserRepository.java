@@ -9,7 +9,15 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
+    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailIgnoreCase(String email);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
+    boolean existsByEmailIgnoreCase(String email);
+    long countByRole(com.ledgerline.model.Role role);
+    long countByStatus(String status);
+    long countByIsLockedTrue();
+    java.util.List<User> findAllByOrderByCreatedAtDesc();
+    java.util.List<User> findAllByFailedLoginAttemptsGreaterThanOrderByFailedLoginAttemptsDesc(int attempts);
+    java.util.List<User> findAllByIsLockedTrue();
 }
-

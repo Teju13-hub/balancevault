@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Wallet,
   ArrowUpRight,
@@ -10,80 +10,213 @@ import {
   ShieldCheck,
   Download,
   Send,
-  Info,
+  PlusCircle,
+  MinusCircle,
+  RefreshCw,
+  Building2,
 } from 'lucide-react';
 import { StatCard } from '../components/StatCard';
 import { DashboardCard } from '../components/DashboardCard';
-import { TransactionRow } from '../components/TransactionRow';
 import { StatusBadge } from '../components/StatusBadge';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { SecondaryButton } from '../components/SecondaryButton';
-import { DEMO_ACCOUNTS, DEMO_TRANSACTIONS, DEMO_USER } from '../data/mockData';
-import type { Screen } from '../types';
+import { Modal } from '../components/Modal';
+import { api, AccountData, LedgerTransactionData } from '../services/api';
+import { formatINR, formatIndianNumber } from '../utils/currency';
+import type { Screen, UserProfile } from '../types';
 
 interface CustomerDashboardProps {
   onNavigate: (screen: Screen) => void;
   onSelectAccount?: (id: string) => void;
-  onShowToast: (title: string, message?: string, type?: 'success' | 'info') => void;
+  onShowToast: (title: string, message?: string, type?: 'success' | 'info' | 'warning') => void;
+  currentUser?: UserProfile | null;
 }
 
 export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
   onNavigate,
   onShowToast,
+  currentUser,
 }) => {
+  const [accounts, setAccounts] = useState<AccountData[]>([]);
+  const [activeAccount, setActiveAccount] = useState<AccountData | null>(null);
+  const [transactions, setTransactions] = useState<LedgerTransactionData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showFullAccount, setShowFullAccount] = useState(false);
   const [copied, setCopied] = useState(false);
-  const primaryAccount = DEMO_ACCOUNTS[0];
 
+  // Modals for Deposit & Withdrawal
+  const [depositOpen, setDepositOpen] = useState(false);
+  const [depositAmount, setDepositAmount] = useState('');
+  const [depositDescription, setDepositDescription] = useState('Customer Funds Deposit');
+  const [actionLoading, setActionLoading] = useState(false);
+
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [withdrawDescription, setWithdrawDescription] = useState('Customer Funds Withdrawal');
+
+  // Load user accounts and transactions from backend
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const userAccounts = await api.getMyAccounts();
+      setAccounts(userAccounts);
+
+      if (userAccounts.length > 0) {
+        const current = activeAccount
+          ? userAccounts.find((a) => a.id === activeAccount.id) || userAccounts[0]
+          : userAccounts[0];
+        setActiveAccount(current);
+
+        const txList = await api.getAccountTransactions(current.id);
+        setTransactions(txList);
+      } else {
+        setActiveAccount(null);
+        setTransactions([]);
+      }
+    } catch (err: any) {
+      onShowToast('Error', err.message || 'Failed to load vault data', 'warning');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  // When active account changes, fetch its ledger transactions
+  const handleSelectAccount = async (acc: AccountData) => {
+    setActiveAccount(acc);
+    try {
+      const txList = await api.getAccountTransactions(acc.id);
+      setTransactions(txList);
+    } catch {
+      setTransactions([]);
+    }
+  };
+
+  // Copy account number
   const handleCopy = () => {
-    navigator.clipboard.writeText(primaryAccount.accountNumber);
+    if (!activeAccount) return;
+    navigator.clipboard.writeText(activeAccount.accountNumber);
     setCopied(true);
-    onShowToast('Account Number Copied', 'Account number saved to clipboard', 'success');
+    onShowToast('Account Copied', `${activeAccount.accountNumber} saved to clipboard`, 'success');
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const monthlyActivity = [
-    { month: 'Jun', inflows: 42, outflows: 28 },
-    { month: 'Jul', inflows: 55, outflows: 32 },
-    { month: 'Aug', inflows: 48, outflows: 40 },
-    { month: 'Sep', inflows: 72, outflows: 45 },
-    { month: 'Oct', inflows: 64, outflows: 38 },
-    { month: 'Nov', inflows: 85, outflows: 31 },
-  ];
+  // Deposit funds execution
+  const handleExecuteDeposit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeAccount) return;
+    const num = parseFloat(depositAmount);
+    if (isNaN(num) || num <= 0) {
+      onShowToast('Invalid Amount', 'Please specify a deposit amount greater than zero', 'warning');
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const updated = await api.deposit(activeAccount.id, {
+        amount: num,
+        description: depositDescription,
+      });
+      onShowToast('Deposit Successful', `${formatINR(num)} deposited into ${updated.accountNumber}`, 'success');
+      setDepositOpen(false);
+      setDepositAmount('');
+      await loadData();
+    } catch (err: any) {
+      onShowToast('Deposit Failed', err.message || 'Transaction could not be completed', 'warning');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Withdraw funds execution
+  const handleExecuteWithdraw = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeAccount) return;
+    const num = parseFloat(withdrawAmount);
+    if (isNaN(num) || num <= 0) {
+      onShowToast('Invalid Amount', 'Please specify a withdrawal amount greater than zero', 'warning');
+      return;
+    }
+    if (num > activeAccount.balance) {
+      onShowToast('Insufficient Balance', `Available balance is ${formatINR(activeAccount.balance)}`, 'warning');
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const updated = await api.withdraw(activeAccount.id, {
+        amount: num,
+        description: withdrawDescription,
+      });
+      onShowToast('Withdrawal Successful', `${formatINR(num)} withdrawn from ${updated.accountNumber}`, 'success');
+      setWithdrawOpen(false);
+      setWithdrawAmount('');
+      await loadData();
+    } catch (err: any) {
+      onShowToast('Withdrawal Failed', err.message || 'Transaction could not be completed', 'warning');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Download real CSV statement
+  const handleDownloadStatement = () => {
+    if (!activeAccount || transactions.length === 0) {
+      onShowToast('No Statement Records', 'No transactions found for this account', 'info');
+      return;
+    }
+
+    const headers = 'Date,Reference ID,Entry Type,Amount,Balance After,Description\n';
+    const rows = transactions
+      .map((t) => `"${t.createdAt}","${t.referenceId}","${t.entryType}","${t.amount}","${t.balanceAfter}","${t.description.replace(/"/g, '""')}"`)
+      .join('\n');
+    const csvContent = 'data:text/csv;charset=utf-8,' + encodeURIComponent(headers + rows);
+    const link = document.createElement('a');
+    link.setAttribute('href', csvContent);
+    link.setAttribute('download', `balancevault-statement-${activeAccount.accountNumber}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    onShowToast('Statement Exported', `Statement for ${activeAccount.accountNumber} downloaded successfully`, 'success');
+  };
+
+  // Portfolio calculations
+  const totalPortfolioValue = useMemo(() => {
+    return accounts.reduce((sum, acc) => sum + (Number(acc.balance) || 0), 0);
+  }, [accounts]);
+
+  const totalInflows = useMemo(() => {
+    return transactions
+      .filter((t) => t.entryType === 'CREDIT')
+      .reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+  }, [transactions]);
+
+  const totalOutflows = useMemo(() => {
+    return transactions
+      .filter((t) => t.entryType === 'DEBIT')
+      .reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+  }, [transactions]);
 
   return (
     <div className="space-y-6">
-      {/* Synthetic Demo Disclaimer Banner */}
-      <div className="p-3.5 rounded-2xl bg-pastel-lavender border border-secondary-lilac flex items-center justify-between text-xs text-deep-purple shadow-sm">
-        <div className="flex items-center gap-2">
-          <Info className="w-4 h-4 text-deep-purple shrink-0" />
-          <span>
-            <strong>Demonstration Environment:</strong> Displaying synthetic client data. Real money movement is strictly isolated to backend ledger verification.
-          </span>
-        </div>
-        <span className="hidden sm:inline font-mono text-[11px] bg-white px-2 py-0.5 rounded border border-secondary-lilac font-bold text-deep-purple">
-          Flyway Validated
-        </span>
-      </div>
-
       {/* Welcome Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pastel-lavender text-deep-purple border border-secondary-lilac mb-1">
-            Overview
-          </span>
-          <h2 className="text-2xl lg:text-3xl font-extrabold text-primary-text tracking-tight mt-0.5">
-            Welcome back, {DEMO_USER.fullName}
+          <h2 className="text-2xl lg:text-3xl font-extrabold text-primary-text tracking-tight">
+            Welcome back, {currentUser?.fullName || currentUser?.username || 'Customer'}
           </h2>
           <p className="text-xs text-secondary-text mt-1">
-            All accounts are secured under append-only audit protocols.
+            All accounts are secured under append-only cryptographic double-entry ledger verification.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <SecondaryButton
             size="sm"
-            onClick={() => onShowToast('Export Started', 'Encrypted ledger statement is downloading', 'info')}
+            onClick={handleDownloadStatement}
             icon={<Download className="w-4 h-4" />}
           >
             Statement
@@ -102,29 +235,29 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Total Portfolio Value"
-          value="$712,171.25"
-          subtitle="Across 3 segregated accounts"
-          change="+4.2%"
+          value={formatINR(totalPortfolioValue)}
+          subtitle={`Across ${accounts.length} active account${accounts.length === 1 ? '' : 's'}`}
+          change="Real-time"
           trend="up"
-          timeframe="vs last month"
-          icon={<Wallet className="w-5 h-5" />}
+          timeframe="Live Vault Total"
+          icon={<Wallet className="w-5 h-5 text-deep-purple" />}
         />
         <StatCard
-          title="Monthly Inflows"
-          value="$70,000.00"
-          subtitle="2 Institutional Wires"
-          change="+18.5%"
+          title="Total Inflows"
+          value={formatINR(totalInflows)}
+          subtitle="Credits to selected vault"
+          change="Double-Entry"
           trend="up"
-          timeframe="this month"
+          timeframe="Account History"
           icon={<ArrowDownLeft className="w-5 h-5 text-app-success" />}
         />
         <StatCard
-          title="Monthly Outflows"
-          value="$8,920.50"
-          subtitle="Vendor disbursements"
-          change="-2.1%"
+          title="Total Outflows"
+          value={formatINR(totalOutflows)}
+          subtitle="Debits from selected vault"
+          change="Protected"
           trend="down"
-          timeframe="this month"
+          timeframe="Account History"
           icon={<ArrowUpRight className="w-5 h-5 text-secondary-text" />}
         />
         <StatCard
@@ -138,35 +271,39 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
         />
       </div>
 
-      {/* Account Balance Showcase & Activity Chart */}
+      {/* Main Account Balance Showcase & Transaction Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
         {/* Main Vault Balance Card */}
         <div className="lg:col-span-1 rounded-2xl bg-gradient-to-br from-deep-purple via-[#423758] to-[#30283d] text-white p-6 shadow-card flex flex-col justify-between relative overflow-hidden">
-          {/* Subtle background ornamentation */}
           <div className="absolute -right-8 -bottom-8 w-40 h-40 rounded-full bg-white/5 pointer-events-none" />
           <div className="absolute right-12 top-4 w-20 h-20 rounded-full bg-pastel-lavender/10 pointer-events-none" />
 
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wider text-secondary-lilac">
-                {primaryAccount.accountName}
+                {activeAccount ? `Customer Vault (${activeAccount.currency})` : 'Primary Vault'}
               </span>
-              <StatusBadge status={primaryAccount.status} size="sm" className="bg-white/20 text-white border-white/30" />
+              <StatusBadge
+                status={activeAccount?.status === 'ACTIVE' ? 'COMPLETED' : 'PENDING'}
+                size="sm"
+                className="bg-white/20 text-white border-white/30"
+              />
             </div>
 
             <div className="mt-4">
               <span className="text-xs text-secondary-lilac block">Available Vault Balance</span>
-              <div className="text-3xl font-extrabold tracking-tight mt-1">
-                ${primaryAccount.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
+              <div className="text-3xl font-extrabold tracking-tight mt-1 font-mono">
+                {activeAccount ? formatINR(activeAccount.balance) : '₹0.00'}
               </div>
               <span className="text-[11px] text-secondary-lilac/80 font-mono mt-0.5 block">
-                Standard: NUMERIC(19,4) Precision
+                PostgreSQL Standard: NUMERIC(19,4) Precision
               </span>
             </div>
           </div>
 
-          <div className="mt-8 pt-5 border-t border-white/15">
-            <div className="flex items-center justify-between text-xs mb-2">
+          <div className="mt-6 pt-4 border-t border-white/15">
+            <div className="flex items-center justify-between text-xs mb-1.5">
               <span className="text-secondary-lilac">Account Number</span>
               <div className="flex items-center gap-1.5">
                 <button
@@ -186,77 +323,104 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
               </div>
             </div>
             <p className="font-mono text-sm tracking-wider font-semibold text-pastel-lavender">
-              {showFullAccount ? primaryAccount.accountNumber : primaryAccount.maskedAccountNumber}
+              {activeAccount
+                ? showFullAccount
+                  ? activeAccount.accountNumber
+                  : `•••• ${activeAccount.accountNumber.slice(-4)}`
+                : 'No Account'}
             </p>
           </div>
 
-          <div className="mt-6 flex items-center gap-2">
+          {/* Quick Action Buttons: Deposit, Withdraw, Transfer */}
+          <div className="mt-5 grid grid-cols-3 gap-2">
             <button
-              onClick={() => onNavigate('transfer')}
-              className="flex-1 py-2 px-3 bg-white text-deep-purple font-bold text-xs rounded-xl hover:bg-pastel-lavender transition-colors text-center"
+              onClick={() => setDepositOpen(true)}
+              className="py-2 px-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-sm"
             >
-              Transfer
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>Deposit</span>
             </button>
             <button
-              onClick={() => onNavigate('accounts')}
-              className="flex-1 py-2 px-3 bg-white/15 hover:bg-white/25 text-white font-medium text-xs rounded-xl transition-colors text-center border border-white/20"
+              onClick={() => setWithdrawOpen(true)}
+              className="py-2 px-2 bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs rounded-xl transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-sm"
             >
-              Vault Details
+              <MinusCircle className="w-3.5 h-3.5" />
+              <span>Withdraw</span>
+            </button>
+            <button
+              onClick={() => onNavigate('transfer')}
+              className="py-2 px-2 bg-white text-deep-purple font-bold text-xs rounded-xl hover:bg-pastel-lavender transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-sm"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>Transfer</span>
             </button>
           </div>
         </div>
 
-        {/* Monthly Activity Visualization */}
-        <div className="lg:col-span-2">
+        {/* Account Selector & Activity Overview */}
+        <div className="lg:col-span-2 space-y-4">
           <DashboardCard
-            title="Monthly Financial Flow"
-            subtitle="Cash in vs Cash out comparison (in thousands USD)"
+            title="My Segregated Accounts"
+            subtitle="Click an account to switch view and transaction history"
             action={
-              <div className="flex items-center gap-4 text-xs">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-deep-purple" />
-                  <span className="text-secondary-text">Inflows</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-secondary-lilac" />
-                  <span className="text-secondary-text">Outflows</span>
-                </div>
-              </div>
+              <button
+                onClick={loadData}
+                className="p-1.5 rounded-lg text-secondary-text hover:text-deep-purple hover:bg-pastel-lavender/40 transition-colors"
+                title="Refresh Accounts"
+              >
+                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              </button>
             }
           >
-            {/* SVG Visualized Bar Chart */}
-            <div className="h-56 flex items-end justify-between gap-3 pt-6 pb-2 px-2">
-              {monthlyActivity.map((item) => (
-                <div key={item.month} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                  <div className="w-full flex items-end justify-center gap-1.5 h-44">
-                    {/* Inflows Bar */}
-                    <div
-                      style={{ height: `${(item.inflows / 100) * 100}%` }}
-                      className="w-full max-w-[20px] bg-deep-purple rounded-t-lg transition-all duration-500 hover:brightness-110 relative group"
-                    >
-                      <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-primary-text text-white text-[10px] py-0.5 px-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                        ${item.inflows}k
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              {accounts.map((acc) => {
+                const isSelected = activeAccount?.id === acc.id;
+                return (
+                  <div
+                    key={acc.id}
+                    onClick={() => handleSelectAccount(acc)}
+                    className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                      isSelected
+                        ? 'border-deep-purple bg-pastel-lavender/30 ring-2 ring-deep-purple/10'
+                        : 'border-app-border bg-white hover:border-secondary-lilac'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isSelected ? 'bg-deep-purple text-white' : 'bg-pastel-lavender text-deep-purple'}`}>
+                        <Building2 className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="font-mono text-xs font-bold text-primary-text">
+                          {acc.accountNumber}
+                        </div>
+                        <div className="text-[11px] text-secondary-text">
+                          Standard Checking ({acc.currency})
+                        </div>
                       </div>
                     </div>
-                    {/* Outflows Bar */}
-                    <div
-                      style={{ height: `${(item.outflows / 100) * 100}%` }}
-                      className="w-full max-w-[20px] bg-secondary-lilac rounded-t-lg transition-all duration-500 hover:brightness-95 relative group"
-                    >
-                      <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-primary-text text-white text-[10px] py-0.5 px-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                        ${item.outflows}k
+                    <div className="text-right">
+                      <div className="font-mono font-bold text-sm text-primary-text">
+                        {formatINR(acc.balance)}
                       </div>
+                      <span className="text-[10px] text-emerald-600 font-semibold uppercase">
+                        {acc.status || 'ACTIVE'}
+                      </span>
                     </div>
                   </div>
-                  <span className="text-xs font-semibold text-secondary-text">{item.month}</span>
+                );
+              })}
+
+              {accounts.length === 0 && !loading && (
+                <div className="col-span-2 text-center py-6 text-secondary-text text-xs">
+                  No vault accounts found. An initial checking account is created automatically upon registration.
                 </div>
-              ))}
+              )}
             </div>
           </DashboardCard>
         </div>
       </div>
 
-      {/* Recent Transactions List */}
+      {/* Recent Ledger Entries Table */}
       <DashboardCard
         title="Recent Ledger Entries"
         subtitle="Chronological transaction trail with balance verification"
@@ -266,17 +430,177 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
           </SecondaryButton>
         }
       >
-        <div className="divide-y divide-app-border/60 -mx-3">
-          {DEMO_TRANSACTIONS.slice(0, 4).map((tx) => (
-            <TransactionRow
-              key={tx.id}
-              transaction={tx}
-              onClick={() => onNavigate('transactions')}
-            />
-          ))}
+        <div className="overflow-x-auto -mx-4 sm:-mx-6">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-light-bg/50 border-b border-app-border text-secondary-text uppercase text-[10px] tracking-wider font-semibold">
+              <tr>
+                <th className="py-2.5 px-4">Date & Time</th>
+                <th className="py-2.5 px-4">Reference ID</th>
+                <th className="py-2.5 px-4">Description</th>
+                <th className="py-2.5 px-4">Type</th>
+                <th className="py-2.5 px-4 text-right">Amount</th>
+                <th className="py-2.5 px-4 text-right">Balance After</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-app-border/60">
+              {transactions.slice(0, 6).map((tx) => (
+                <tr key={tx.id} className="hover:bg-pastel-lavender/10 transition-colors">
+                  <td className="py-3 px-4 text-secondary-text font-mono text-[11px] whitespace-nowrap">
+                    {new Date(tx.createdAt).toLocaleString('en-IN', {
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
+                    })}
+                  </td>
+                  <td className="py-3 px-4 font-mono font-bold text-primary-text text-[11px] whitespace-nowrap">
+                    {tx.referenceId}
+                  </td>
+                  <td className="py-3 px-4 text-primary-text font-medium">
+                    {tx.description}
+                  </td>
+                  <td className="py-3 px-4">
+                    <span
+                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                        tx.entryType === 'CREDIT'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-rose-50 text-rose-700 border border-rose-200'
+                      }`}
+                    >
+                      {tx.entryType === 'CREDIT' ? <ArrowDownLeft className="w-3 h-3" /> : <ArrowUpRight className="w-3 h-3" />}
+                      {tx.entryType}
+                    </span>
+                  </td>
+                  <td className={`py-3 px-4 text-right font-mono font-bold text-xs ${tx.entryType === 'CREDIT' ? 'text-emerald-600' : 'text-primary-text'}`}>
+                    {tx.entryType === 'CREDIT' ? '+' : '-'}{formatINR(tx.amount)}
+                  </td>
+                  <td className="py-3 px-4 text-right font-mono text-xs text-secondary-text">
+                    {formatINR(tx.balanceAfter)}
+                  </td>
+                </tr>
+              ))}
+
+              {transactions.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-secondary-text text-xs">
+                    No transactions recorded for this account yet. Use Deposit or Move Money to initiate transactions.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </DashboardCard>
+
+      {/* ======================================================== */}
+      {/* DEPOSIT MODAL                                            */}
+      {/* ======================================================== */}
+      <Modal
+        isOpen={depositOpen}
+        onClose={() => setDepositOpen(false)}
+        title="Deposit Funds into Vault"
+        subtitle={`Credit funds to account ${activeAccount?.accountNumber} via double-entry system cash rail.`}
+      >
+        <form onSubmit={handleExecuteDeposit} className="space-y-4 pt-2">
+          <div>
+            <label className="block text-xs font-semibold text-primary-text mb-1">
+              Deposit Amount (INR ₹)
+            </label>
+            <div className="relative flex items-center bg-light-bg border border-app-border rounded-xl px-3 py-2.5 focus-within:border-deep-purple focus-within:ring-2 focus-within:ring-pastel-lavender transition-all">
+              <span className="font-bold text-deep-purple pr-2 text-sm">₹</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                required
+                value={depositAmount}
+                onChange={(e) => setDepositAmount(e.target.value)}
+                placeholder="5000.00"
+                className="w-full bg-transparent border-0 text-primary-text text-sm font-mono focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-primary-text mb-1">
+              Description / Memo
+            </label>
+            <input
+              type="text"
+              value={depositDescription}
+              onChange={(e) => setDepositDescription(e.target.value)}
+              placeholder="e.g. Salary Deposit, Client Settlement"
+              className="w-full bg-light-bg border border-app-border rounded-xl px-3 py-2 text-xs text-primary-text focus:outline-none focus:border-deep-purple"
+            />
+          </div>
+
+          <div className="pt-2 flex items-center justify-end gap-2.5">
+            <SecondaryButton type="button" onClick={() => setDepositOpen(false)}>
+              Cancel
+            </SecondaryButton>
+            <PrimaryButton type="submit" disabled={actionLoading}>
+              {actionLoading ? 'Processing...' : 'Confirm Deposit'}
+            </PrimaryButton>
+          </div>
+        </form>
+      </Modal>
+
+      {/* ======================================================== */}
+      {/* WITHDRAWAL MODAL                                         */}
+      {/* ======================================================== */}
+      <Modal
+        isOpen={withdrawOpen}
+        onClose={() => setWithdrawOpen(false)}
+        title="Withdraw Funds from Vault"
+        subtitle={`Debit funds from ${activeAccount?.accountNumber}. Strict overdraft prevention is enforced.`}
+      >
+        <form onSubmit={handleExecuteWithdraw} className="space-y-4 pt-2">
+          <div>
+            <label className="block text-xs font-semibold text-primary-text mb-1">
+              Withdrawal Amount (INR ₹)
+            </label>
+            <div className="relative flex items-center bg-light-bg border border-app-border rounded-xl px-3 py-2.5 focus-within:border-deep-purple focus-within:ring-2 focus-within:ring-pastel-lavender transition-all">
+              <span className="font-bold text-deep-purple pr-2 text-sm">₹</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                required
+                value={withdrawAmount}
+                onChange={(e) => setWithdrawAmount(e.target.value)}
+                placeholder="1000.00"
+                className="w-full bg-transparent border-0 text-primary-text text-sm font-mono focus:outline-none"
+              />
+            </div>
+            {activeAccount && (
+              <p className="text-[11px] text-secondary-text mt-1">
+                Available to withdraw: <strong className="text-primary-text font-mono">{formatINR(activeAccount.balance)}</strong>
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-primary-text mb-1">
+              Description / Memo
+            </label>
+            <input
+              type="text"
+              value={withdrawDescription}
+              onChange={(e) => setWithdrawDescription(e.target.value)}
+              placeholder="e.g. Vendor Payment, ATM Cash Out"
+              className="w-full bg-light-bg border border-app-border rounded-xl px-3 py-2 text-xs text-primary-text focus:outline-none focus:border-deep-purple"
+            />
+          </div>
+
+          <div className="pt-2 flex items-center justify-end gap-2.5">
+            <SecondaryButton type="button" onClick={() => setWithdrawOpen(false)}>
+              Cancel
+            </SecondaryButton>
+            <PrimaryButton type="submit" disabled={actionLoading}>
+              {actionLoading ? 'Processing...' : 'Confirm Withdrawal'}
+            </PrimaryButton>
+          </div>
+        </form>
+      </Modal>
+
     </div>
   );
 };
-

@@ -50,12 +50,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
       <main className="flex-1">
         <section className="relative overflow-hidden pt-16 pb-20 lg:pt-24 lg:pb-32 px-6">
           <div className="max-w-5xl mx-auto text-center relative z-10">
-            {/* Pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pastel-lavender border border-secondary-lilac text-deep-purple text-xs font-semibold mb-8 shadow-subtle">
-              <span className="w-2 h-2 rounded-full bg-accent-purple animate-pulse" />
-              <span>Lavender Dream Pastel Theme Live</span>
-            </div>
-
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-primary-text leading-[1.15]">
               Institutional-Grade Money Movement with{' '}
               <span className="text-deep-purple underline decoration-secondary-lilac decoration-wavy decoration-2">

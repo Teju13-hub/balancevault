@@ -10,53 +10,70 @@ import {
 } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { DashboardCard } from '../components/DashboardCard';
-import { StatusBadge } from '../components/StatusBadge';
 import { SecondaryButton } from '../components/SecondaryButton';
-import { DEMO_USER } from '../data/mockData';
+import { authStorage } from '../services/api';
+import type { UserProfile } from '../types';
 
 interface CustomerProfilePageProps {
   onShowToast: (title: string, message?: string, type?: 'success' | 'info') => void;
+  currentUser?: UserProfile | null;
 }
 
-export const CustomerProfilePage: React.FC<CustomerProfilePageProps> = ({ onShowToast }) => {
+export const CustomerProfilePage: React.FC<CustomerProfilePageProps> = ({ onShowToast, currentUser }) => {
+  const profile = currentUser || authStorage.getUser() || {
+    id: 'unknown',
+    username: 'customer',
+    fullName: 'Verified Customer',
+    email: 'customer@balancevault.com',
+    role: 'ACCOUNT_HOLDER' as const,
+    phone: '+91 98765 43210',
+    tier: 'Standard Vault',
+    kycStatus: 'VERIFIED' as const,
+    joinedDate: 'November 2026',
+    twoFactorEnabled: true,
+  };
+  const displayName = profile.fullName || profile.username;
+  const initials = displayName
+    .split(' ')
+    .map((n) => n[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'BV';
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <PageHeader
         title="Customer Profile"
         description="Verified identity credentials and vault membership parameters."
-        badge={<StatusBadge status={DEMO_USER.kycStatus} />}
       />
 
       {/* Main Profile Header Card */}
       <div className="bg-white rounded-2xl border border-app-border p-6 shadow-subtle flex flex-col sm:flex-row items-center sm:items-start gap-6">
         <div className="w-20 h-20 rounded-2xl bg-deep-purple text-white text-2xl font-bold flex items-center justify-center shrink-0 shadow-sm">
-          EV
+          {initials}
         </div>
 
         <div className="flex-1 text-center sm:text-left">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h3 className="text-xl font-bold text-primary-text">{DEMO_USER.fullName}</h3>
-              <p className="text-xs text-secondary-text mt-0.5 font-mono">ID: {DEMO_USER.id}</p>
+              <h3 className="text-xl font-bold text-primary-text">{displayName}</h3>
+              <p className="text-xs text-secondary-text mt-0.5 font-mono">Username: @{profile.username}</p>
             </div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pastel-lavender border border-secondary-lilac text-deep-purple text-xs font-bold self-center sm:self-auto">
-              <ShieldCheck className="w-4 h-4" />
-              <span>{DEMO_USER.tier}</span>
-            </span>
           </div>
 
           <div className="mt-4 pt-4 border-t border-app-border grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
             <div className="flex items-center gap-2 text-secondary-text">
               <Mail className="w-4 h-4 text-deep-purple shrink-0" />
-              <span className="truncate">{DEMO_USER.email}</span>
+              <span className="truncate">{profile.email}</span>
             </div>
             <div className="flex items-center gap-2 text-secondary-text">
               <Phone className="w-4 h-4 text-deep-purple shrink-0" />
-              <span>{DEMO_USER.phone}</span>
+              <span>{profile.phone || '+1 (555) 019-2834'}</span>
             </div>
             <div className="flex items-center gap-2 text-secondary-text">
               <Calendar className="w-4 h-4 text-deep-purple shrink-0" />
-              <span>Member since {DEMO_USER.joinedDate}</span>
+              <span>Member since {profile.joinedDate || 'November 2026'}</span>
             </div>
           </div>
         </div>
@@ -105,36 +122,36 @@ export const CustomerProfilePage: React.FC<CustomerProfilePageProps> = ({ onShow
           </div>
         </DashboardCard>
 
-        {/* KYC & Identity Status Card */}
+        {/* Account Standing & Transfer Limits Card */}
         <DashboardCard
-          title="Identity Verification (KYC)"
-          subtitle="Tiered regulatory compliance status"
+          title="Account Standing & Limits"
+          subtitle="Tiered transaction and vault capability parameters"
         >
           <div className="space-y-4 text-xs">
             <div className="p-3.5 rounded-xl bg-pastel-lavender/30 border border-secondary-lilac space-y-2">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-deep-purple">Verified Documents</span>
+                <span className="font-bold text-deep-purple">Vault Status</span>
                 <span className="text-[11px] font-semibold text-app-success flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> Approved
+                  <CheckCircle2 className="w-3.5 h-3.5" /> Active Standing
                 </span>
               </div>
               <p className="text-secondary-text text-[11px] leading-relaxed">
-                Biometric passport and corporate registration documents validated under SOC2 Type II compliance.
+                Full customer privileges enabled. Internal money movements and external wire settlements fully authorized.
               </p>
             </div>
 
             <div className="space-y-2 text-secondary-text">
               <div className="flex justify-between py-1 border-b border-app-border/70">
-                <span>Daily Institutional Limit:</span>
-                <strong className="text-primary-text font-mono">$1,000,000.00</strong>
+                <span>Daily Transaction Limit:</span>
+                <strong className="text-primary-text font-mono">₹10,00,000.00</strong>
               </div>
               <div className="flex justify-between py-1 border-b border-app-border/70">
-                <span>Per-Transaction Limit:</span>
-                <strong className="text-primary-text font-mono">$250,000.00</strong>
+                <span>Per-Transfer Limit:</span>
+                <strong className="text-primary-text font-mono">₹2,50,000.00</strong>
               </div>
               <div className="flex justify-between py-1">
-                <span>Compliance Refresh Due:</span>
-                <strong className="text-primary-text">November 2027</strong>
+                <span>Security Standing:</span>
+                <strong className="text-emerald-700 font-semibold">Good Standing</strong>
               </div>
             </div>
           </div>

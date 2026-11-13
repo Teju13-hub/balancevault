@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
-import { Menu, Search, Bell, Shield, ChevronDown, CheckCircle, Info } from 'lucide-react';
-import type { UserRole, Screen } from '../types';
+import {
+  Menu,
+  Bell,
+  Search,
+  Shield,
+  ChevronDown,
+  ArrowUpRight,
+  ArrowDownLeft,
+  Lock,
+  LogOut,
+} from 'lucide-react';
+import { Screen, UserProfile, UserRole } from '../types';
 
 interface TopbarProps {
   title: string;
   subtitle?: string;
   onOpenMobileMenu: () => void;
   userRole: UserRole;
+  currentUser: UserProfile | null;
   onNavigate: (screen: Screen) => void;
-  searchQuery?: string;
-  onSearchChange?: (query: string) => void;
+  onLogout: () => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
 }
 
 export const Topbar: React.FC<TopbarProps> = ({
@@ -17,70 +29,87 @@ export const Topbar: React.FC<TopbarProps> = ({
   subtitle,
   onOpenMobileMenu,
   userRole,
+  currentUser,
   onNavigate,
-  searchQuery = '',
+  onLogout,
+  searchQuery,
   onSearchChange,
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
+  const displayName = currentUser?.fullName || currentUser?.username || (userRole === 'ADMIN' ? 'Compliance Admin' : 'Customer');
+  const displayEmail = currentUser?.email || `${currentUser?.username || 'user'}@balancevault.com`;
+  const initials = displayName
+    .split(' ')
+    .map((n) => n[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'BV';
+
   const notifications = [
     {
       id: '1',
-      title: 'Monthly Statement Generated',
+      title: 'Monthly statement ready for review',
       time: '10m ago',
-      read: false,
-      icon: <CheckCircle className="w-4 h-4 text-app-success" />,
+      icon: <ArrowDownLeft className="w-4 h-4 text-app-success" />,
     },
     {
       id: '2',
-      title: 'Security Notice: New session active',
-      time: '2h ago',
-      read: true,
-      icon: <Info className="w-4 h-4 text-app-info" />,
+      title: 'Automated ledger checksum verified: 0 mismatches',
+      time: '1h ago',
+      icon: <Lock className="w-4 h-4 text-deep-purple" />,
+    },
+    {
+      id: '3',
+      title: 'Institutional wire cleared successfully',
+      time: '3h ago',
+      icon: <ArrowUpRight className="w-4 h-4 text-secondary-text" />,
     },
   ];
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-app-border px-4 lg:px-8 py-3.5">
-      <div className="flex items-center justify-between gap-4">
-        {/* Left: Mobile trigger & Page title */}
-        <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-app-border">
+      <div className="px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+        {/* Left Side: Mobile Menu Button & Page Header */}
+        <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={onOpenMobileMenu}
-            className="p-2 rounded-xl border border-app-border text-secondary-text hover:bg-pastel-lavender/40 hover:text-deep-purple lg:hidden focus:outline-none"
-            aria-label="Open navigation"
+            className="p-2 -ml-2 rounded-xl text-primary-text hover:bg-pastel-lavender/50 lg:hidden"
+            aria-label="Open menu"
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div>
-            <h1 className="text-lg lg:text-xl font-bold tracking-tight text-primary-text">{title}</h1>
-            {subtitle && <p className="text-xs text-secondary-text hidden sm:block">{subtitle}</p>}
+
+          <div className="min-w-0">
+            <h1 className="text-lg lg:text-xl font-bold tracking-tight text-primary-text truncate font-sans">
+              {title}
+            </h1>
+            {subtitle && (
+              <p className="text-xs text-secondary-text truncate hidden sm:block">
+                {subtitle}
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Center: Search Interface */}
-        <div className="flex-1 max-w-md hidden md:block">
-          <div className="relative">
-            <Search className="w-4 h-4 text-secondary-text absolute left-3.5 top-1/2 -translate-y-1/2" />
+        {/* Center / Search Area */}
+        <div className="hidden md:flex items-center flex-1 max-w-md mx-4">
+          <div className="relative w-full">
+            <Search className="w-4 h-4 text-secondary-text absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+              onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search accounts, transactions, or reference IDs..."
-              className="w-full bg-main-bg rounded-xl border border-app-border pl-9 pr-4 py-2 text-xs text-primary-text placeholder:text-secondary-text/70 focus:outline-none focus:border-accent-purple focus:ring-2 focus:ring-accent-purple/20 transition-all"
+              className="w-full pl-10 pr-4 py-2 text-xs rounded-xl bg-main-bg border border-app-border text-primary-text placeholder:text-secondary-text/70 focus:outline-none focus:border-secondary-lilac focus:ring-2 focus:ring-accent-purple/20 transition-all"
             />
           </div>
         </div>
 
-        {/* Right: Notifications & User profile menu */}
-        <div className="flex items-center gap-3">
-          {/* Security Badge */}
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-pastel-lavender border border-secondary-lilac rounded-full text-xs font-semibold text-deep-purple shadow-sm">
-            <Shield className="w-3.5 h-3.5" />
-            <span>256-Bit TLS</span>
-          </div>
-
+        {/* Right Actions */}
+        <div className="flex items-center gap-2.5">
           {/* Notifications Dropdown */}
           <div className="relative">
             <button
@@ -126,31 +155,33 @@ export const Topbar: React.FC<TopbarProps> = ({
               className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-pastel-lavender/30 border border-transparent hover:border-app-border transition-colors focus:outline-none"
             >
               <div className="w-8 h-8 rounded-full bg-deep-purple text-white font-bold text-xs flex items-center justify-center">
-                {userRole === 'ADMIN' ? 'AD' : 'EV'}
+                {initials}
               </div>
               <ChevronDown className="w-3.5 h-3.5 text-secondary-text" />
             </button>
 
             {showProfileMenu && (
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-modal border border-app-border py-2 z-50 animate-in fade-in zoom-in-95">
+              <div className="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-modal border border-app-border py-2 z-50 animate-in fade-in zoom-in-95">
                 <div className="px-4 py-2.5 border-b border-app-border">
-                  <p className="text-xs font-bold text-primary-text">
-                    {userRole === 'ADMIN' ? 'Compliance Admin' : 'Eleanor Vance'}
+                  <p className="text-xs font-bold text-primary-text truncate">
+                    {displayName}
                   </p>
                   <p className="text-[11px] text-secondary-text truncate">
-                    {userRole === 'ADMIN' ? 'admin@balancevault.com' : 'eleanor.vance@example.com'}
+                    {displayEmail}
                   </p>
                 </div>
                 <div className="py-1">
-                  <button
-                    onClick={() => {
-                      onNavigate('profile');
-                      setShowProfileMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-xs text-primary-text hover:bg-pastel-lavender/40 hover:text-deep-purple transition-colors"
-                  >
-                    View Customer Profile
-                  </button>
+                  {userRole === 'ACCOUNT_HOLDER' && (
+                    <button
+                      onClick={() => {
+                        onNavigate('profile');
+                        setShowProfileMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-xs text-primary-text hover:bg-pastel-lavender/40 hover:text-deep-purple transition-colors"
+                    >
+                      View Customer Profile
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       onNavigate('settings');
@@ -159,6 +190,17 @@ export const Topbar: React.FC<TopbarProps> = ({
                     className="w-full text-left px-4 py-2 text-xs text-primary-text hover:bg-pastel-lavender/40 hover:text-deep-purple transition-colors"
                   >
                     Account Settings
+                  </button>
+                  <div className="my-1 border-t border-app-border" />
+                  <button
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      onLogout();
+                    }}
+                    className="w-full text-left px-4 py-2 text-xs text-app-error hover:bg-app-error/10 flex items-center gap-2 transition-colors font-semibold"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Sign Out</span>
                   </button>
                 </div>
               </div>

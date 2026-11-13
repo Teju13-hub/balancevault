@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Copy,
   Eye,
@@ -7,8 +7,9 @@ import {
   Download,
   Send,
   ShieldCheck,
-  Calendar,
+  Building2,
   Lock,
+  RefreshCw,
 } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { DashboardCard } from '../components/DashboardCard';
@@ -17,8 +18,9 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { SecondaryButton } from '../components/SecondaryButton';
 import { DataTable } from '../components/DataTable';
 import type { Column } from '../components/DataTable';
-import { DEMO_ACCOUNTS, DEMO_TRANSACTIONS } from '../data/mockData';
-import type { Transaction, Screen } from '../types';
+import { api, AccountData, LedgerTransactionData } from '../services/api';
+import { formatINR } from '../utils/currency';
+import type { Screen } from '../types';
 
 interface AccountDetailsPageProps {
   onNavigate: (screen: Screen) => void;
@@ -29,11 +31,50 @@ export const AccountDetailsPage: React.FC<AccountDetailsPageProps> = ({
   onNavigate,
   onShowToast,
 }) => {
-  const [selectedAccountId, setSelectedAccountId] = useState(DEMO_ACCOUNTS[0].id);
+  const [accounts, setAccounts] = useState<AccountData[]>([]);
+  const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null);
+  const [transactions, setTransactions] = useState<LedgerTransactionData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showFullAccount, setShowFullAccount] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const account = DEMO_ACCOUNTS.find((a) => a.id === selectedAccountId) || DEMO_ACCOUNTS[0];
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const userAccounts = await api.getMyAccounts();
+      setAccounts(userAccounts);
+
+      if (userAccounts.length > 0) {
+        const active = selectedAccountId
+          ? userAccounts.find((a) => a.id === selectedAccountId) || userAccounts[0]
+          : userAccounts[0];
+        setSelectedAccountId(active.id);
+
+        const txList = await api.getAccountTransactions(active.id);
+        setTransactions(txList);
+      }
+    } catch (err: any) {
+      onShowToast('Error', err.message || 'Unable to retrieve vault accounts', 'info');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const handleSelectAccount = async (id: number) => {
+    setSelectedAccountId(id);
+    try {
+      const txList = await api.getAccountTransactions(id);
+      setTransactions(txList);
+    } catch {
+      setTransactions([]);
+    }
+  };
+
+  const account = accounts.find((a) => a.id === selectedAccountId) || accounts[0];
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -42,35 +83,64 @@ export const AccountDetailsPage: React.FC<AccountDetailsPageProps> = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const columns: Column<Transaction>[] = [
+  const handleExportStatement = () => {
+    if (!account || transactions.length === 0) {
+      onShowToast('No Records', 'No transactions found to export', 'info');
+      return;
+    }
+
+    const headers = 'Date,Reference ID,Entry Type,Amount,Balance After,Description\n';
+    const rows = transactions
+      .map(
+        (t) =>
+          `"${t.createdAt}","${t.referenceId}","${t.entryType}","${t.amount}","${t.balanceAfter}","${(t.description || '').replace(/"/g, '""')}"`
+      )
+      .join('\n');
+    const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `statement-${account.accountNumber}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    onShowToast('Statement Exported', `Statement for ${account.accountNumber} downloaded`, 'success');
+  };
+
+  const columns: Column<LedgerTransactionData>[] = [
     {
       header: 'Timestamp',
-      accessor: (row) => <span className="font-medium text-xs">{row.timestamp}</span>,
-    },
-    {
-      header: 'Description',
       accessor: (row) => (
-        <div>
-          <span className="font-semibold block text-primary-text">{row.title}</span>
-          <span className="text-xs text-secondary-text font-mono">Ref: {row.referenceId}</span>
-        </div>
-      ),
-    },
-    {
-      header: 'Type',
-      accessor: (row) => (
-        <span
-          className={`px-2 py-0.5 rounded text-[11px] font-bold ${
-            row.type === 'CREDIT' ? 'bg-pastel-lavender text-app-success' : 'bg-main-bg text-secondary-text'
-          }`}
-        >
-          {row.type}
+        <span className="font-mono text-xs text-secondary-text">
+          {new Date(row.createdAt).toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          })}{' '}
+          {new Date(row.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
         </span>
       ),
     },
     {
-      header: 'Status',
-      accessor: (row) => <StatusBadge status={row.status} size="sm" />,
+      header: 'Reference & Description',
+      accessor: (row) => (
+        <div>
+          <span className="font-semibold block text-primary-text text-xs">{row.description || 'Ledger Entry'}</span>
+          <span className="text-[11px] text-deep-purple font-mono">Ref: {row.referenceId}</span>
+        </div>
+      ),
+    },
+    {
+      header: 'Entry Type',
+      accessor: (row) => (
+        <span
+          className={`px-2 py-0.5 rounded text-[11px] font-bold ${
+            row.entryType === 'CREDIT' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+          }`}
+        >
+          {row.entryType}
+        </span>
+      ),
     },
     {
       header: 'Amount',
@@ -78,11 +148,11 @@ export const AccountDetailsPage: React.FC<AccountDetailsPageProps> = ({
       headerClassName: 'text-right',
       accessor: (row) => (
         <span
-          className={`font-mono font-semibold ${
-            row.type === 'CREDIT' ? 'text-app-success' : 'text-primary-text'
+          className={`font-mono font-bold text-xs ${
+            row.entryType === 'CREDIT' ? 'text-emerald-600' : 'text-primary-text'
           }`}
         >
-          {row.type === 'CREDIT' ? '+' : '-'}${row.amount.toFixed(4)}
+          {row.entryType === 'CREDIT' ? '+' : '-'}{formatINR(row.amount)}
         </span>
       ),
     },
@@ -92,7 +162,7 @@ export const AccountDetailsPage: React.FC<AccountDetailsPageProps> = ({
       headerClassName: 'text-right',
       accessor: (row) => (
         <span className="font-mono text-secondary-text text-xs">
-          ${row.balanceAfter.toFixed(4)}
+          {formatINR(row.balanceAfter)}
         </span>
       ),
     },
@@ -101,15 +171,14 @@ export const AccountDetailsPage: React.FC<AccountDetailsPageProps> = ({
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Account Details"
-        description="Comprehensive ledger statement and vault management."
-        badge={<StatusBadge status={account.status} />}
+        title="Vault Account Details"
+        description="Comprehensive double-entry statement and real-time ledger balance verification."
         actions={
           <div className="flex items-center gap-2">
             <SecondaryButton
               size="sm"
               icon={<Download className="w-4 h-4" />}
-              onClick={() => onShowToast('Exporting Statement', 'Official signed statement is generating', 'info')}
+              onClick={handleExportStatement}
             >
               Export Statement
             </SecondaryButton>
@@ -126,107 +195,105 @@ export const AccountDetailsPage: React.FC<AccountDetailsPageProps> = ({
 
       {/* Account Selector Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
-        {DEMO_ACCOUNTS.map((acc) => (
+        {accounts.map((acc) => (
           <button
             key={acc.id}
-            onClick={() => setSelectedAccountId(acc.id)}
-            className={`px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
+            onClick={() => handleSelectAccount(acc.id)}
+            className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
               selectedAccountId === acc.id
-                ? 'bg-deep-purple text-white border-deep-purple shadow-sm'
-                : 'bg-white text-secondary-text border-app-border hover:bg-pastel-lavender/30 hover:text-primary-text'
+                ? 'bg-deep-purple text-white shadow-sm'
+                : 'bg-white text-secondary-text border border-app-border hover:bg-pastel-lavender/30'
             }`}
           >
-            {acc.accountName} • {acc.currency}
+            <Building2 className="w-3.5 h-3.5" />
+            <span>{acc.accountNumber}</span>
+            <span className="font-mono font-bold">({formatINR(acc.balance)})</span>
           </button>
         ))}
       </div>
 
-      {/* Account Details Specs Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-6 rounded-2xl bg-white border border-app-border shadow-subtle flex flex-col justify-between">
-          <div>
-            <span className="text-xs uppercase font-semibold text-secondary-text tracking-wider">
-              Available Vault Balance
-            </span>
-            <div className="text-3xl font-extrabold text-primary-text mt-2 font-mono">
-              ${account.balance.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}
+      {account && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Main Balance Info */}
+          <div className="md:col-span-2 p-6 rounded-2xl bg-white border border-app-border shadow-card space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-xs uppercase font-bold tracking-wider text-secondary-text">
+                  Vault Account Overview
+                </span>
+                <div className="font-mono text-2xl font-extrabold text-primary-text mt-1">
+                  {formatINR(account.balance)}
+                </div>
+                <span className="text-xs text-secondary-text font-mono">
+                  Currency: {account.currency} • Precision: NUMERIC(19,4)
+                </span>
+              </div>
+              <StatusBadge status={account.status || 'ACTIVE'} />
             </div>
-            <p className="text-[11px] text-secondary-text mt-1">
-              Hold balance: $0.0000 • Currency: {account.currency}
-            </p>
-          </div>
-          <div className="mt-6 pt-4 border-t border-app-border flex items-center justify-between text-xs text-secondary-text">
-            <span>Tier Level</span>
-            <span className="font-semibold text-deep-purple">{account.type}</span>
-          </div>
-        </div>
 
-        <div className="p-6 rounded-2xl bg-white border border-app-border shadow-subtle space-y-4">
-          <span className="text-xs uppercase font-semibold text-secondary-text tracking-wider block">
-            Banking Identifiers
-          </span>
-          <div>
-            <span className="text-[11px] text-secondary-text block">Account Number</span>
-            <div className="flex items-center justify-between mt-1">
-              <span className="font-mono text-sm font-semibold text-primary-text">
-                {showFullAccount ? account.accountNumber : account.maskedAccountNumber}
-              </span>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setShowFullAccount(!showFullAccount)}
-                  className="p-1 text-secondary-text hover:text-deep-purple"
-                  aria-label="Toggle account masking"
-                >
-                  {showFullAccount ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-                <button
-                  onClick={() => handleCopy(account.accountNumber)}
-                  className="p-1 text-secondary-text hover:text-deep-purple"
-                  aria-label="Copy account number"
-                >
-                  {copied ? <Check className="w-4 h-4 text-app-success" /> : <Copy className="w-4 h-4" />}
-                </button>
+            <div className="pt-4 border-t border-app-border grid grid-cols-2 gap-4 text-xs">
+              <div>
+                <span className="text-secondary-text block">Account Number</span>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="font-mono font-bold text-primary-text text-sm">
+                    {showFullAccount ? account.accountNumber : `•••• ${account.accountNumber.slice(-4)}`}
+                  </span>
+                  <button
+                    onClick={() => setShowFullAccount(!showFullAccount)}
+                    className="p-1 rounded text-secondary-text hover:text-deep-purple"
+                  >
+                    {showFullAccount ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </button>
+                  <button
+                    onClick={() => handleCopy(account.accountNumber)}
+                    className="p-1 rounded text-secondary-text hover:text-deep-purple"
+                  >
+                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <span className="text-secondary-text block">Account Created</span>
+                <span className="font-mono font-semibold text-primary-text text-xs block mt-1">
+                  {new Date(account.createdAt).toLocaleDateString('en-IN', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="pt-2 border-t border-app-border/70 flex items-center justify-between">
-            <span className="text-[11px] text-secondary-text">Routing Number</span>
-            <span className="font-mono text-xs font-semibold text-primary-text">{account.routingNumber}</span>
+          {/* Quick Security Checklist */}
+          <div className="p-5 rounded-2xl bg-white border border-app-border shadow-card space-y-3 text-xs">
+            <h4 className="font-bold text-deep-purple flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
+              <ShieldCheck className="w-4 h-4 text-deep-purple" />
+              <span>Vault Protections</span>
+            </h4>
+            <p className="text-secondary-text leading-relaxed">
+              • <strong>Append-Only:</strong> Ledger entries cannot be modified or purged once written.
+            </p>
+            <p className="text-secondary-text leading-relaxed">
+              • <strong>Zero Overdraft:</strong> Table check constraint guarantees non-negative balance at the database layer.
+            </p>
           </div>
         </div>
+      )}
 
-        <div className="p-6 rounded-2xl bg-white border border-app-border shadow-subtle space-y-4">
-          <span className="text-xs uppercase font-semibold text-secondary-text tracking-wider block">
-            Security &amp; Compliance
-          </span>
-          <div className="flex items-center gap-2.5 text-xs text-primary-text">
-            <ShieldCheck className="w-4 h-4 text-deep-purple shrink-0" />
-            <span>Append-only DB triggers active</span>
-          </div>
-          <div className="flex items-center gap-2.5 text-xs text-primary-text">
-            <Lock className="w-4 h-4 text-deep-purple shrink-0" />
-            <span>Strict tenant boundary verified</span>
-          </div>
-          <div className="flex items-center gap-2.5 text-xs text-primary-text">
-            <Calendar className="w-4 h-4 text-deep-purple shrink-0" />
-            <span>Created on {account.createdAt}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Account Transactions Statement */}
+      {/* Ledger Entries Table */}
       <DashboardCard
-        title="Account Statement &amp; Ledger Entries"
-        subtitle="Immutable transaction events recorded for this account"
+        title="Account Ledger Trail"
+        subtitle="Chronological list of all double-entry debits and credits for this account"
       >
         <DataTable
           columns={columns}
-          data={DEMO_TRANSACTIONS}
-          keyExtractor={(row) => row.id}
+          data={transactions}
+          keyExtractor={(item) => String(item.id)}
+          emptyMessage="No ledger entries recorded for this account."
         />
       </DashboardCard>
     </div>
   );
 };
-

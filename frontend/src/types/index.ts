@@ -79,6 +79,8 @@ export type Screen =
   | 'landing'
   | 'login'
   | 'register'
+  | 'forgot-password'
+  | 'reset-password'
   | 'dashboard'
   | 'accounts'
   | 'transfer'
@@ -87,6 +89,9 @@ export type Screen =
   | 'settings'
   | 'admin-dashboard'
   | 'admin-users'
-  | 'admin-onboarding'
+  | 'admin-accounts'
+  | 'admin-transactions'
+  | 'admin-security'
+  | 'admin-reports'
   | 'admin-audit';
 

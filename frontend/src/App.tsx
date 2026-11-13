@@ -1,14 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Topbar } from './components/Topbar';
 import { ToastNotification } from './components/ToastNotification';
 import type { Toast } from './components/ToastNotification';
-import type { Screen, UserRole } from './types';
+import type { Screen, UserProfile, UserRole } from './types';
+import { api, authStorage } from './services/api';
 
 // Screens
 import { LandingPage } from './screens/LandingPage';
 import { LoginPage } from './screens/LoginPage';
 import { RegisterPage } from './screens/RegisterPage';
+import { ForgotPasswordPage } from './screens/ForgotPasswordPage';
+import { ResetPasswordPage } from './screens/ResetPasswordPage';
 import { CustomerDashboard } from './screens/CustomerDashboard';
 import { AccountDetailsPage } from './screens/AccountDetailsPage';
 import { MoneyTransferPage } from './screens/MoneyTransferPage';
@@ -17,15 +20,27 @@ import { CustomerProfilePage } from './screens/CustomerProfilePage';
 import { SettingsPage } from './screens/SettingsPage';
 import { AdminDashboard } from './screens/AdminDashboard';
 import { AdminUserManagementPage } from './screens/AdminUserManagementPage';
-import { AdminOnboardingPage } from './screens/AdminOnboardingPage';
 import { AdminAuditLogPage } from './screens/AdminAuditLogPage';
 
+function getDefaultScreenForRole(role?: UserRole): Screen {
+  if (role === 'ADMIN') return 'admin-dashboard';
+  if (role === 'AUDITOR') return 'admin-audit';
+  return 'dashboard';
+}
+
 export function App() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('dashboard');
-  const [userRole, setUserRole] = useState<UserRole>('ACCOUNT_HOLDER');
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => authStorage.getUser());
+  const [currentScreen, setCurrentScreen] = useState<Screen>(() => {
+    const user = authStorage.getUser();
+    if (!user || !authStorage.getToken()) return 'login';
+    return getDefaultScreenForRole(user.role);
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [resetTokenParam, setResetTokenParam] = useState<string>('');
+
+  const userRole: UserRole = currentUser?.role || 'ACCOUNT_HOLDER';
 
   const showToast = (title: string, message?: string, type: Toast['type'] = 'info') => {
     const id = Date.now().toString();
@@ -39,34 +54,113 @@ export function App() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  const handleRoleChange = (role: UserRole) => {
-    setUserRole(role);
-    showToast(
-      `Switched to ${role.replace(/_/g, ' ')} view`,
-      `Permissions and navigation updated to ${role} role`,
-      'info'
-    );
+  // Check URL token and validate session against backend /api/v1/auth/me on mount/refresh
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get('token') || params.get('resetToken');
+    if (urlToken) {
+      setResetTokenParam(urlToken.trim());
+      setCurrentScreen('reset-password');
+      return;
+    }
+
+    const token = authStorage.getToken();
+    if (token) {
+      api.getCurrentUser()
+        .then((profile) => {
+          setCurrentUser(profile);
+          authStorage.setSession(token, profile);
+        })
+        .catch(() => {
+          // Token is invalid or expired
+          authStorage.clearSession();
+          setCurrentUser(null);
+          setCurrentScreen('login');
+          showToast('Session Expired', 'Please sign in again to continue', 'info');
+        });
+    }
+  }, []);
+
+  // Strict role guard enforcement
+  const handleNavigate = (targetScreen: Screen) => {
+    if (
+      targetScreen === 'landing' ||
+      targetScreen === 'login' ||
+      targetScreen === 'register' ||
+      targetScreen === 'forgot-password' ||
+      targetScreen === 'reset-password'
+    ) {
+      setCurrentScreen(targetScreen);
+      return;
+    }
+
+    if (!currentUser) {
+      setCurrentScreen('login');
+      return;
+    }
+
+    // Role-specific screen restrictions
+    if (currentUser.role === 'ACCOUNT_HOLDER') {
+      if (targetScreen.startsWith('admin-')) {
+        showToast('Access Denied', 'Administrative screens are restricted to authorized personnel', 'info');
+        setCurrentScreen('dashboard');
+        return;
+      }
+    } else if (currentUser.role === 'ADMIN') {
+      if (targetScreen === 'dashboard' || targetScreen === 'transfer' || targetScreen === 'accounts' || targetScreen === 'transactions') {
+        showToast('Admin Mode Active', 'Administrators access system command centers only', 'info');
+        setCurrentScreen(targetScreen === 'transactions' ? 'admin-transactions' : 'admin-dashboard');
+        return;
+      }
+    } else if (currentUser.role === 'AUDITOR') {
+      if (targetScreen === 'transfer' || targetScreen === 'dashboard' || (targetScreen.startsWith('admin-') && targetScreen !== 'admin-audit')) {
+        showToast('Read-Only Role', 'Auditors have read-only access to audit trail and ledgers', 'info');
+        setCurrentScreen('admin-audit');
+        return;
+      }
+    }
+
+    setCurrentScreen(targetScreen);
   };
 
   const handleLogout = () => {
-    showToast('Signed Out', 'You have been safely signed out', 'info');
+    authStorage.clearSession();
+    setCurrentUser(null);
     setCurrentScreen('login');
+    showToast('Signed Out', 'You have been safely signed out', 'info');
+  };
+
+  const handleLoginSuccess = (user: UserProfile) => {
+    setCurrentUser(user);
+    const dest = getDefaultScreenForRole(user.role);
+    setCurrentScreen(dest);
+    showToast(
+      'Authentication Successful',
+      `Welcome, ${user.fullName || user.username} (${user.role.replace(/_/g, ' ')})`,
+      'success'
+    );
+  };
+
+  const handleRegisterSuccess = (user: UserProfile) => {
+    setCurrentUser(user);
+    setCurrentScreen('dashboard');
+    showToast(
+      'Account Created',
+      `Welcome to BalanceVault, ${user.fullName || user.username}`,
+      'success'
+    );
   };
 
   // Fullscreen standalone pages
   if (currentScreen === 'landing') {
-    return <LandingPage onNavigate={setCurrentScreen} />;
+    return <LandingPage onNavigate={handleNavigate} />;
   }
 
   if (currentScreen === 'login') {
     return (
       <LoginPage
-        onNavigate={setCurrentScreen}
-        onLoginSuccess={(role) => {
-          setUserRole(role);
-          setCurrentScreen(role === 'ADMIN' ? 'admin-dashboard' : 'dashboard');
-          showToast('Authentication Successful', `Welcome back as ${role.replace(/_/g, ' ')}`, 'success');
-        }}
+        onNavigate={handleNavigate}
+        onLoginSuccess={handleLoginSuccess}
       />
     );
   }
@@ -74,12 +168,21 @@ export function App() {
   if (currentScreen === 'register') {
     return (
       <RegisterPage
-        onNavigate={setCurrentScreen}
-        onRegisterSuccess={(role) => {
-          setUserRole(role);
-          setCurrentScreen('dashboard');
-          showToast('Account Created', 'Default role ACCOUNT_HOLDER assigned', 'success');
-        }}
+        onNavigate={handleNavigate}
+        onRegisterSuccess={handleRegisterSuccess}
+      />
+    );
+  }
+
+  if (currentScreen === 'forgot-password') {
+    return <ForgotPasswordPage onNavigate={handleNavigate} />;
+  }
+
+  if (currentScreen === 'reset-password') {
+    return (
+      <ResetPasswordPage
+        onNavigate={handleNavigate}
+        initialToken={resetTokenParam}
       />
     );
   }
@@ -89,6 +192,8 @@ export function App() {
     landing: { title: 'BalanceVault', subtitle: 'Trust in Every Transaction' },
     login: { title: 'Sign In', subtitle: 'Access your account' },
     register: { title: 'Open Account', subtitle: 'Register verified vault' },
+    'forgot-password': { title: 'Forgot Password', subtitle: 'Self-service account access recovery' },
+    'reset-password': { title: 'Reset Password', subtitle: 'Set new secure credentials' },
     dashboard: { title: 'Vault Overview', subtitle: 'Primary portfolio status and balances' },
     accounts: { title: 'Accounts & Vaults', subtitle: 'Segregated account records' },
     transfer: { title: 'Money Movement', subtitle: 'Internal vault sweep and wire simulation' },
@@ -97,7 +202,10 @@ export function App() {
     settings: { title: 'System Settings', subtitle: 'Preferences and session parameters' },
     'admin-dashboard': { title: 'Admin Command Center', subtitle: 'System integrity and security metrics' },
     'admin-users': { title: 'User Directory', subtitle: 'Tenant roles and access control' },
-    'admin-onboarding': { title: 'KYC Onboarding', subtitle: 'Compliance review pipeline' },
+    'admin-accounts': { title: 'Account Management', subtitle: 'Customer and system vault registries' },
+    'admin-transactions': { title: 'Transaction Monitor', subtitle: 'Unified ledger streams and suspicious detection' },
+    'admin-security': { title: 'Security Center', subtitle: 'Real-time telemetry and brute-force defenses' },
+    'admin-reports': { title: 'Reports & Analytics', subtitle: 'Financial aggregation and trend curves' },
     'admin-audit': { title: 'Audit Trail', subtitle: 'Immutable database event logs' },
   };
 
@@ -108,9 +216,9 @@ export function App() {
       {/* Global Sidebar */}
       <Sidebar
         currentScreen={currentScreen}
-        onNavigate={setCurrentScreen}
+        onNavigate={handleNavigate}
         userRole={userRole}
-        onRoleChange={handleRoleChange}
+        currentUser={currentUser}
         mobileOpen={mobileMenuOpen}
         onCloseMobile={() => setMobileMenuOpen(false)}
         onLogout={handleLogout}
@@ -123,7 +231,9 @@ export function App() {
           subtitle={currentMeta.subtitle}
           onOpenMobileMenu={() => setMobileMenuOpen(true)}
           userRole={userRole}
-          onNavigate={setCurrentScreen}
+          currentUser={currentUser}
+          onNavigate={handleNavigate}
+          onLogout={handleLogout}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
         />
@@ -131,21 +241,22 @@ export function App() {
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto animate-in fade-in duration-200">
           {currentScreen === 'dashboard' && (
             <CustomerDashboard
-              onNavigate={setCurrentScreen}
+              onNavigate={handleNavigate}
               onShowToast={showToast}
+              currentUser={currentUser}
             />
           )}
 
           {currentScreen === 'accounts' && (
             <AccountDetailsPage
-              onNavigate={setCurrentScreen}
+              onNavigate={handleNavigate}
               onShowToast={showToast}
             />
           )}
 
           {currentScreen === 'transfer' && (
             <MoneyTransferPage
-              onNavigate={setCurrentScreen}
+              onNavigate={handleNavigate}
               onShowToast={showToast}
             />
           )}
@@ -155,26 +266,62 @@ export function App() {
           )}
 
           {currentScreen === 'profile' && (
-            <CustomerProfilePage onShowToast={showToast} />
+            <CustomerProfilePage
+              onShowToast={showToast}
+              currentUser={currentUser}
+            />
           )}
 
           {currentScreen === 'settings' && (
-            <SettingsPage onShowToast={showToast} />
+            <SettingsPage
+              onShowToast={showToast}
+              currentUser={currentUser}
+              onLogout={handleLogout}
+            />
           )}
 
           {currentScreen === 'admin-dashboard' && (
             <AdminDashboard
-              onNavigate={setCurrentScreen}
+              onNavigate={handleNavigate}
               onShowToast={showToast}
+              initialTab="overview"
+            />
+          )}
+
+          {currentScreen === 'admin-accounts' && (
+            <AdminDashboard
+              onNavigate={handleNavigate}
+              onShowToast={showToast}
+              initialTab="accounts"
+            />
+          )}
+
+          {currentScreen === 'admin-transactions' && (
+            <AdminDashboard
+              onNavigate={handleNavigate}
+              onShowToast={showToast}
+              initialTab="transactions"
+            />
+          )}
+
+          {currentScreen === 'admin-security' && (
+            <AdminDashboard
+              onNavigate={handleNavigate}
+              onShowToast={showToast}
+              initialTab="security"
+            />
+          )}
+
+          {currentScreen === 'admin-reports' && (
+            <AdminDashboard
+              onNavigate={handleNavigate}
+              onShowToast={showToast}
+              initialTab="reports"
             />
           )}
 
           {currentScreen === 'admin-users' && (
             <AdminUserManagementPage onShowToast={showToast} />
-          )}
-
-          {currentScreen === 'admin-onboarding' && (
-            <AdminOnboardingPage onShowToast={showToast} />
           )}
 
           {currentScreen === 'admin-audit' && (
